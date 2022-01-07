@@ -57,14 +57,14 @@ const s = (p5_inst) => {
     function drawArrow(base, vec, myColor) {
         let arrowSize = 7
         p5_inst.push()
-            p5_inst.stroke(myColor)
-            p5_inst.strokeWeight(2)
-            p5_inst.fill(myColor)
-            p5_inst.translate(base.x, base.y)
-            p5_inst.line(0, 0, vec.x, vec.y)
-            p5_inst.rotate(vec.heading())
-            p5_inst.translate(vec.mag() - arrowSize, 0)
-            p5_inst.triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0)
+        p5_inst.stroke(myColor)
+        p5_inst.strokeWeight(2)
+        p5_inst.fill(myColor)
+        p5_inst.translate(base.x, base.y)
+        p5_inst.line(0, 0, vec.x, vec.y)
+        p5_inst.rotate(vec.heading())
+        p5_inst.translate(vec.mag() - arrowSize, 0)
+        p5_inst.triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0)
         p5_inst.pop()
     }
 
@@ -87,3 +87,63 @@ const s = (p5_inst) => {
     }
 }
 let myp5 = new p5(s, 'canvas_component')
+
+
+async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+
+        headers: {
+            'Content-Type': 'application/json'
+            },
+
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+}
+
+
+var checkList = document.getElementById('list1');
+checkList.getElementsByClassName('anchor')[0].onclick = function () {
+    if (checkList.classList.contains('visible'))
+        checkList.classList.remove('visible');
+    else
+        checkList.classList.add('visible');
+}
+
+
+function addNewA() {
+
+    var newA = document.getElementById("newValue").value;
+    document.getElementById('listOfA').innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue=  "${newA}"   />${newA}</li>`
+    postData("http://127.0.0.1:8080/getFilter", {
+        a: parseInt(newA),
+        flag: 'true'
+    })
+    .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+    });
+    document.querySelectorAll('.target1').forEach(item => {
+        item.addEventListener('input', getValue)
+    })
+}
+
+const getValue = event => {
+    let aValue = event.currentTarget.dataset.avalue;
+    let flag = event.target.checked;
+    console.log(flag.toString)
+    postData("http://127.0.0.1:8080/getFilter", {
+        a: parseInt(aValue),
+        flag: flag.toString()
+    })
+    .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+    });
+}
+
+
+document.querySelectorAll('.target1').forEach(item => {
+    item.addEventListener('input', getValue)
+})
