@@ -58,7 +58,7 @@ def deleteFilter(a):
 
 @app.route('/getFilter', methods=['POST', 'GET'])
 @cross_origin()
-def getAllPassFilterData():
+def getFrequencyResponce():
     
     if request.method == 'POST':
         zerosAndPoles = json.loads(request.data)
@@ -88,7 +88,7 @@ def getAllPassFilterData():
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
 @cross_origin()
     
-def addOne():
+def getAllPassFilterData():
     global angles
     if request.method == 'POST':
 
