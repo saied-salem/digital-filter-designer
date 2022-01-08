@@ -134,7 +134,7 @@ const getValue = event => {
     let aValue = event.currentTarget.dataset.avalue;
     let flag = event.target.checked;
     console.log(flag.toString)
-    postData("http://127.0.0.1:8080/getFilter", {
+    postData("http://127.0.0.1:8080/getAllPassFilter", {
         a: parseInt(aValue),
         flag: flag.toString()
     })

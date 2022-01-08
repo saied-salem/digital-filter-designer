@@ -14,6 +14,14 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 countFilter = 0
+def frequencyResponse(zeros, poles, gain): 
+    w, h = scipy.signal.freqz_zpk(zeros, poles, gain)
+    magnitude = 20 * numpy.log10(numpy.abs(h))
+    angles = numpy.unwrap(numpy.angle(h))
+    return w/max(w), angles, magnitude
+
+
+
 
 def increment():
     global countFilter
@@ -49,6 +57,35 @@ def deleteFilter(a):
 
 
 @app.route('/getFilter', methods=['POST', 'GET'])
+@cross_origin()
+def getAllPassFilterData():
+    
+    if request.method == 'POST':
+        zerosAndPoles = json.loads(request.data)
+        zeros = zerosAndPoles['zeros']
+        poles = zerosAndPoles['pole']
+        gain = zerosAndPoles['gain']
+
+
+        w, angles, magnitude = frequencyResponse(zeros, poles, gain)
+        response_data = {
+                'w': w.tolist(),
+                'angles': angles.tolist(),
+                'magnitude': angles.tolist()
+
+            }
+    return jsonify(response_data)
+
+
+
+
+
+
+
+
+
+
+@app.route('/getAllPassFilter', methods=['POST', 'GET'])
 @cross_origin()
     
 def addOne():
