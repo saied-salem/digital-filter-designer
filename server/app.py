@@ -6,13 +6,10 @@ import scipy
 import scipy.signal 
 
 from flask_cors import CORS, cross_origin
+
 app = Flask(__name__)
 cors = CORS(app)
-
 app.config['CORS_HEADERS'] = 'Content-Type'
-
-
-
 
 countFilter = 0
 def frequencyResponse(zeros, poles, gain): 
@@ -20,9 +17,6 @@ def frequencyResponse(zeros, poles, gain):
     magnitude = 20 * numpy.log10(numpy.abs(h))
     angles = numpy.unwrap(numpy.angle(h))
     return w/max(w), angles, magnitude
-
-
-
 
 def increment():
     global countFilter
@@ -78,17 +72,8 @@ def getFrequencyResponce():
     return jsonify(response_data)
 
 
-
-
-
-
-
-
-
-
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
 @cross_origin()
-    
 def getAllPassFilterData():
     global angles
     if request.method == 'POST':
@@ -135,16 +120,9 @@ def getAllPassFilterData():
         return 'There is no Post request'
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html')
-
-@app.route('/data', methods=['GET', 'POST'])
-def data():
-    if request.method == 'POST':
-        file = request.form['upload-file']
-        data = pd.read_excel(file)
-        return render_template('data.html', data=data.to_dict())
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
 
 
 @app.route('/differenceEquationCoefficients ' , methods=['GET','POST'])
@@ -166,8 +144,6 @@ def get_difference_equation_coefficients():
         }
 
         return jsonify(response_data) 
-
-
 
 
 if __name__ == '__main__':
