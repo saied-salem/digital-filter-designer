@@ -3,11 +3,12 @@ from flask import Flask, jsonify, request, json,render_template
 import numpy
 from numpy.lib.function_base import angle
 import scipy
-import scipy.signal
+import scipy.signal 
 
 from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 cors = CORS(app)
+
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
@@ -144,6 +145,29 @@ def data():
         file = request.form['upload-file']
         data = pd.read_excel(file)
         return render_template('data.html', data=data.to_dict())
+
+
+@app.route('/differenceEquationCoefficients ' , methods=['GET','POST'])
+@cross_origin()
+def get_difference_equation_coefficients():
+    if request.method == 'POST':
+
+        zeros_and_poles = json.loads(request.data)
+        z = zeros_and_poles['zeros']
+        p = zeros_and_poles['poles']
+        print(zeros_and_poles)
+        impulse_response = scipy.signal.ZerosPolesGain(z,p)
+        transfer_function = impulse_response.to_tf()
+        num = transfer_function.num
+        den = transfer_function.den
+        response_data = {
+            'b': num.tolist(),
+            'a': den.tolist()
+        }
+
+        return jsonify(response_data) 
+
+
 
 
 if __name__ == '__main__':
