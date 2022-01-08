@@ -290,3 +290,62 @@ Plotly.plot( TESTER, [{
     margin: { t: 0 } }, {staticPlot: true} );
 
 console.log( Plotly.BUILD );
+
+async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+
+        headers: {
+            'Content-Type': 'application/json'
+            },
+
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+}
+
+
+var checkList = document.getElementById('list1');
+checkList.getElementsByClassName('anchor')[0].onclick = function () {
+    if (checkList.classList.contains('visible'))
+        checkList.classList.remove('visible');
+    else
+        checkList.classList.add('visible');
+}
+
+
+function addNewA() {
+
+    var newA = document.getElementById("newValue").value;
+    document.getElementById('listOfA').innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue=  "${newA}"   />${newA}</li>`
+    postData("http://127.0.0.1:8080/getFilter", {
+        a: parseInt(newA),
+        flag: 'true'
+    })
+    .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+    });
+    document.querySelectorAll('.target1').forEach(item => {
+        item.addEventListener('input', getValue)
+    })
+}
+
+const getValue = event => {
+    let aValue = event.currentTarget.dataset.avalue;
+    let flag = event.target.checked;
+    console.log(flag.toString)
+    postData("http://127.0.0.1:8080/getAllPassFilter", {
+        a: parseInt(aValue),
+        flag: flag.toString()
+    })
+    .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+    });
+}
+
+
+document.querySelectorAll('.target1').forEach(item => {
+    item.addEventListener('input', getValue)
+})

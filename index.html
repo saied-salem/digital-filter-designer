@@ -1,16 +1,87 @@
 <!DOCTYPE html>
 <html>
-	<head>
-        <meta charset="utf-8" />
-		<title>Index</title>
-		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-		<script src="p5.min.js"></script>
-	</head>
-	<body>
-		<div id="my_container">
-			<div id="canvas_component"></div>
-			<div id="tester" style="width:90%;height:250px;"></div>
-		</div>
-		<script src="index.js"></script>
-	</body>
+
+<head>
+	<style>
+		.dropdown-check-list {
+			display: inline-block;
+		}
+
+		.dropdown-check-list .anchor {
+			position: relative;
+			cursor: pointer;
+			display: inline-block;
+			padding: 5px 50px 5px 10px;
+			border: 1px solid #ccc;
+		}
+
+		.dropdown-check-list .anchor:after {
+			position: absolute;
+			content: "";
+			border-left: 2px solid black;
+			border-top: 2px solid black;
+			padding: 5px;
+			right: 10px;
+			top: 20%;
+			-moz-transform: rotate(-135deg);
+			-ms-transform: rotate(-135deg);
+			-o-transform: rotate(-135deg);
+			-webkit-transform: rotate(-135deg);
+			transform: rotate(-135deg);
+		}
+
+		.dropdown-check-list .anchor:active:after {
+			right: 8px;
+			top: 21%;
+		}
+
+		.dropdown-check-list ul.items {
+			padding: 2px;
+			display: none;
+			margin: 0;
+			border: 1px solid #ccc;
+			border-top: none;
+		}
+
+		.dropdown-check-list ul.items li {
+			list-style: none;
+		}
+
+		.dropdown-check-list.visible .anchor {
+			color: #0094ff;
+		}
+
+		.dropdown-check-list.visible .items {
+			display: block;
+		}
+	</style>
+	<meta charset="utf-8" />
+	<title>Index</title>
+	<script src="p5.min.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="index.js"></script>
+</head>
+
+<body>
+	<div id="list1" class="dropdown-check-list" tabindex="100">
+		<span class="anchor">Select 'a' for AllPass Filter</span>
+		<ul id="listOfA" class="items">
+			<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9 </li>
+			<li><input class="target1" type="checkbox" data-avalue="-0.495" />-0.495</li>
+			<li><input class="target1" type="checkbox" data-avalue="0.0" />0.0</li>
+			<li><input class="target1" type="checkbox" data-avalue="0.49499" />0.49499</li>
+			<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
+
+		</ul>
+	</div>
+
+	<input type="text" id="newValue" value="">
+
+	<button onclick="addNewA()">submit</button>
+	<div id="my_container">
+		<div id="canvas_component"></div>
+		<div id="tester" style="width:90%;height:250px;"></div>
+	</div>
+</body>
+
 </html>
