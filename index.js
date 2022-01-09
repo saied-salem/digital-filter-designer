@@ -1,6 +1,7 @@
 let unit_circle_center, radius
 let curr_picked
 let filter_plane
+let allPassCoeff = []
 const CANVAS_SIZE = 500
 const NONE_PICKED = { point: null, conjugate: null }
 const Mode = { ZERO : 0, POLE : 1, CONJ_ZERO : 2, CONJ_POLE : 3 }
@@ -39,19 +40,14 @@ const s = (p5_inst) => {
                 console.log("found")
                 curr_picked = found
             }
-            else filter_plane.addItem(p, mode = Mode.ZERO)
+            else filter_plane.addItem(p, mode = Mode.CONJ_POLE)
             p5_inst.redraw()
         }
         else if (curr_picked != NONE_PICKED) {
             curr_picked = NONE_PICKED
             p5_inst.redraw()
         }
-        return false
-    }
-
-    p5_inst.doubleClicked = function () {
-        filter_plane.removeAll()
-        p5_inst.redraw()
+        return true
     }
 
     p5_inst.mouseDragged = function () {
@@ -166,7 +162,7 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 8, fill = '#ffb939', picked = false) {
+        draw(size = 12, fill = '#ffb939', picked = false) {
             console.log(picked)
             p5_inst.push()
             if (picked) fill = '#645ffb'
@@ -186,7 +182,7 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 8, fill = '#fff939', picked = false) {
+        draw(size = 12, fill = '#fff939', picked = false) {
             picked
                 ? cross(this.center, size, fill, 2, '#645ffb')
                 : cross(this.center, size, fill, 2, fill)
@@ -195,18 +191,6 @@ const s = (p5_inst) => {
         getConjugate() {
             let p = super.getConjugate()
             return new Pole(p.center, p.origin)
-        }
-    }
-
-    class Conjugate {
-        constructor(point, conjugate) {
-            this.point = point
-            this.conjugate = conjugate
-        }
-
-        draw(size = 8, fill = '#ffb939', picked = false) {
-            this.point.draw(size, fill, picked)
-            this.conjugate.draw(size, fill, picked)
         }
     }
 
@@ -280,14 +264,10 @@ const s = (p5_inst) => {
 
 }
 
-let myp5 = new p5(s, 'canvas_component')
+let myp5 = new p5(s, 'circle-canvas')
 
-TESTER = document.getElementById('tester');
+TESTER = document.getElementById('filter-phase-response');
 
-Plotly.newPlot( TESTER, [{
-    x: [1, 2, 3, 4, 5],
-    y: [1, 2, 4, 8, 16] }], { 
-    margin: { t: 0 } }, {staticPlot: true} );
 
 async function postData(url = '', data = {}) {
     // Default options are marked with *
@@ -318,8 +298,8 @@ function addNewA() {
 
     var newA = document.getElementById("newValue").value;
     document.getElementById('listOfA').innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue=  "${newA}"   />${newA}</li>`
-    postData("http://127.0.0.1:8080/getFilter", {
-        a: parseInt(newA),
+    postData("http://127.0.0.1:8080/getAllPassFilter", {
+        a: parseFloat(newA),
         flag: 'true'
     })
     .then(data => {
@@ -330,20 +310,29 @@ function addNewA() {
     })
 }
 
-const getValue = event => {
-    let aValue = event.currentTarget.dataset.avalue;
-    let flag = event.target.checked;
-    console.log(flag.toString)
-    postData("http://127.0.0.1:8080/getAllPassFilter", {
-        a: parseInt(aValue),
-        flag: flag.toString()
+function updateFilter(){
+    postData('http://127.0.0.1:8080/getAllPassFilter', {
+        a: allPassCoeff,
+    }).then((data) => {
+        console.log(data)
+        Plotly.newPlot( TESTER, [{
+            x: data.w,
+            y: data.angles }], { 
+            margin: { t: 0 } }, {staticPlot: true} );
     })
-    .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
-    });
 }
 
 
 document.querySelectorAll('.target1').forEach(item => {
-    item.addEventListener('input', getValue)
+    item.addEventListener('input', updateAllPassCoeff)
 })
+
+function updateAllPassCoeff(event){
+    let aValue = event.currentTarget.dataset.avalue
+    let checked = event.target.checked
+    if (checked){
+        allPassCoeff.push(aValue)
+    }
+    else allPassCoeff.remove(aValue)
+    updateFilter()
+}
