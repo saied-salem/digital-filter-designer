@@ -1,4 +1,3 @@
-import pandas as pd
 from flask import Flask, jsonify, request, json,render_template
 import numpy
 from numpy.lib.function_base import angle
@@ -8,8 +7,7 @@ import scipy.signal
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
 
 countFilter = 0
 def frequencyResponse(zeros, poles, gain): 
@@ -50,7 +48,7 @@ def deleteFilter(a):
     angles = numpy.subtract(angles1,angles)
     return w/max(w), angles
 
-
+"""
 @app.route('/getFilter', methods=['POST', 'GET'])
 @cross_origin()
 def getFrequencyResponce():
@@ -70,10 +68,10 @@ def getFrequencyResponce():
 
             }
     return jsonify(response_data)
+"""
 
 
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
-@cross_origin()
 def getAllPassFilterData():
     global angles
     if request.method == 'POST':
@@ -124,17 +122,15 @@ def getAllPassFilterData():
 def hello_world():
     return 'Hello World!'
 
-
-@app.route('/differenceEquationCoefficients ' , methods=['GET','POST'])
-@cross_origin()
-def get_difference_equation_coefficients():
+@app.route('/differenceEquationCoefficients' , methods=['GET','POST'])
+def differenceEquationCoefficients():
     if request.method == 'POST':
 
         zeros_and_poles = json.loads(request.data)
         z = zeros_and_poles['zeros']
         p = zeros_and_poles['poles']
         print(zeros_and_poles)
-        impulse_response = scipy.signal.ZerosPolesGain(z,p)
+        impulse_response = scipy.signal.ZerosPolesGain(z,p,1)
         transfer_function = impulse_response.to_tf()
         num = transfer_function.num
         den = transfer_function.den
@@ -147,4 +143,4 @@ def get_difference_equation_coefficients():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8080)

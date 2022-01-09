@@ -5,3 +5,5 @@
 server/.venv
 server/.env
 server/venv
+server/__pycache__/
+server/*.py[cod]

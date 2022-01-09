@@ -9,8 +9,8 @@ let y
 let dx
 let b = [0.21546504, 0.01546504];
 let a = [ 1.        , -0.06906992];
-let zeros=[1, 2]
-let poles=[3, 4]
+let zeros=[1, 2, 4, 5, 7]
+let poles=[-2, 4, 8, 19]
 
 function getCol(matrix, col){
     var column = [];
@@ -28,10 +28,6 @@ function getCol(matrix, col){
 
       headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
-
           },
 
       body: JSON.stringify(data) // body data type must match "Content-Type" header
@@ -40,7 +36,7 @@ function getCol(matrix, col){
 }
 
 async function get_differenceEquationCoefficients(){
-  response = await postData("http://127.0.0.1:5000/differenceEquationCoefficients", {
+  response = await postData("http://127.0.0.1:8080/differenceEquationCoefficients", {
           zeros: zeros,
           poles: poles
     })

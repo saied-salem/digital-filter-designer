@@ -284,12 +284,10 @@ let myp5 = new p5(s, 'canvas_component')
 
 TESTER = document.getElementById('tester');
 
-Plotly.plot( TESTER, [{
+Plotly.newPlot( TESTER, [{
     x: [1, 2, 3, 4, 5],
     y: [1, 2, 4, 8, 16] }], { 
     margin: { t: 0 } }, {staticPlot: true} );
-
-console.log( Plotly.BUILD );
 
 async function postData(url = '', data = {}) {
     // Default options are marked with *
@@ -298,7 +296,7 @@ async function postData(url = '', data = {}) {
         mode: 'cors',
 
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
             },
 
         body: JSON.stringify(data) // body data type must match "Content-Type" header
