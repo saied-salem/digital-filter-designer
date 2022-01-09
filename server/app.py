@@ -48,7 +48,6 @@ def deleteFilter(a):
     angles = numpy.subtract(angles1,angles)
     return w/max(w), angles
 
-"""
 @app.route('/getFilter', methods=['POST', 'GET'])
 @cross_origin()
 def getFrequencyResponce():
@@ -68,7 +67,6 @@ def getFrequencyResponce():
 
             }
     return jsonify(response_data)
-"""
 
 
 @app.route('/getAllPassFilter', methods=['POST', 'GET'])
