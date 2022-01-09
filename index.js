@@ -265,8 +265,9 @@ const s = (p5_inst) => {
 }
 
 let myp5 = new p5(s, 'circle-canvas')
+clearCheckBoxes()
 
-TESTER = document.getElementById('filter-phase-response');
+plottingCanvas = document.getElementById('filter-phase-response');
 
 
 async function postData(url = '', data = {}) {
@@ -295,44 +296,52 @@ checkList.getElementsByClassName('anchor')[0].onclick = function () {
 
 
 function addNewA() {
-
-    var newA = document.getElementById("newValue").value;
-    document.getElementById('listOfA').innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue=  "${newA}"   />${newA}</li>`
-    postData("http://127.0.0.1:8080/getAllPassFilter", {
-        a: parseFloat(newA),
-        flag: 'true'
-    })
-    .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
-    });
-    document.querySelectorAll('.target1').forEach(item => {
-        item.addEventListener('input', getValue)
-    })
+    var newA = document.getElementById('newValue').value
+    document.getElementById(
+        'listOfA'
+    ).innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue=  "${newA}"   />${newA}</li>`
+    document
+        .querySelector('#listOfA:last-child')
+        .addEventListener('input', getValue)
+    allPassCoeff.push(parseFloat(newA))
+    updateFilter()
 }
 
 function updateFilter(){
     postData('http://127.0.0.1:8080/getAllPassFilter', {
         a: allPassCoeff,
     }).then((data) => {
-        console.log(data)
-        Plotly.newPlot( TESTER, [{
-            x: data.w,
-            y: data.angles }], { 
-            margin: { t: 0 } }, {staticPlot: true} );
+        updateFilterPlotting(data.w, data.angles)
     })
 }
 
+function updateFilterPlotting(x, y){
+        Plotly.newPlot( plottingCanvas, [{ x, y }], { margin: { t: 0 } }, {staticPlot: true} );
+}
 
 document.querySelectorAll('.target1').forEach(item => {
     item.addEventListener('input', updateAllPassCoeff)
 })
 
+function arrayRemove(arr, value) {
+    return arr.filter(function (ele) {
+        return ele != value
+    })
+}
+
 function updateAllPassCoeff(event){
-    let aValue = event.currentTarget.dataset.avalue
+    let aValue = parseFloat(event.currentTarget.dataset.avalue)
     let checked = event.target.checked
     if (checked){
         allPassCoeff.push(aValue)
     }
-    else allPassCoeff.remove(aValue)
+    else allPassCoeff =  arrayRemove(allPassCoeff, aValue)
+
     updateFilter()
+}
+
+function clearCheckBoxes(){
+    document.querySelectorAll('.target1').forEach(item => {
+        item.checked = false;
+    })
 }
