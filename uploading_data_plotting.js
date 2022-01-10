@@ -3,7 +3,7 @@ const csvFile = document.getElementById("csvFile");
 const button = document.getElementById("sent_zeros_poles"); 
 let x_column 
 let y_column
-let y_filtterd=[0,,0,0,0,0,0,0,0,0,0,0,0,0]
+let y_filtterd
 let x
 let y
 let dx
@@ -48,6 +48,25 @@ button.addEventListener("click",function(e){
 
 })
 
+function filter(a,b,n,y,y_filtterd){
+  let filterd_point=0
+
+  if(n>=a.length-1 && n>=b.length-1){
+
+  for (let i = 1; i < a.length; i++) {
+
+    filterd_point += a[i]*y_filtterd[n-i] 
+    
+  }
+  for (let i = 0; i < b.length; i++) {
+
+    filterd_point += b[i]*y[n-i] 
+    }
+  return filterd_point;
+  }
+  return y_filtterd[n];
+  
+}
 
 myForm.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -58,6 +77,8 @@ myForm.addEventListener("submit", function (e) {
     x_column = getCol(df.values,0)
     dx = x_column[2]-x_column[1];
     y_column = getCol(df.values,1)
+
+    y_filtterd = y_column.slice(0,a.length)
 
     let x=x_column[0]
     let y=y_column[0]
@@ -97,10 +118,13 @@ myForm.addEventListener("submit", function (e) {
       x:  [[x_column[cnt]]],
       y: [[y_column[cnt]]]
       }
+      
+      // y_filtterd[cnt]=a[1]*y_filtterd[cnt-1] + b[0]*cy_olumn[cnt] + b[1]*y_column[cnt-1];
   
-      y_filtterd[cnt]=a[1]*y_filtterd[cnt-1] + b[0]*y_column[cnt] + b[1]*y_column[cnt-1];
-  
-      let yyyyy=a[1]*y_filtterd[cnt-1] + b[0]*y_column[cnt] + b[1]*y_column[cnt-1];
+      // let yyyyy=a[1]*y_filtterd[cnt-1] + b[0]*y_column[cnt] + b[1]*y_column[cnt-1];
+
+      y_filtterd[cnt] = filter(a,b,cnt,y_column,y_filtterd)
+      
   
       // console.log(yyyyy)
   
