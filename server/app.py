@@ -17,7 +17,7 @@ def frequencyResponse(zeros, poles, gain):
 
 def phaseResponse(a):
     w, h = scipy.signal.freqz([-a, 1.0], [1.0, -a])
-    angels = np.unwrap(np.angle(h))
+    angels = np.zeros(512) if a==1 else np.unwrap(np.angle(h))
     return w/max(w), angels
 
 def parseToComplex(pairs):
