@@ -1,12 +1,12 @@
 let unit_circle_center, radius
 let curr_picked
 let filter_plane
-let allPassCoeff = []
 let unit_circle_mode
 const CANVAS_SIZE = 300
 const NONE_PICKED = { item: {point: null, conjugate: null}, index: -1 }
 const Mode = { ZERO : 0, POLE : 1, CONJ_ZERO : 2, CONJ_POLE : 3 }
 const Conj_Modes = {2: Mode.CONJ_ZERO, 3: Mode.CONJ_POLE}
+const API = "http://127.0.0.1:8080"
 const modesMap = {
     'real-zero': Mode.ZERO,
     'real-pole': Mode.POLE,
@@ -55,6 +55,7 @@ const s = (p5_inst) => {
             p5_inst.redraw()
         }
         console.log(filter_plane.getZerosPoles(radius))
+        updateFilterDesign(filter_plane.getZerosPoles(radius))
         return true
     }
 
@@ -158,7 +159,7 @@ const s = (p5_inst) => {
         }
 
         getRelativePosition(max){
-            return {x: this.getRelativeX(max), y: this.getRelativeY(max)}
+            return [this.getRelativeX(max), this.getRelativeY(max)]
         }
 
         getConjugate() {
@@ -337,25 +338,27 @@ document
     .querySelector('#remove')
     .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
+let filterDesignMagnitude = document.querySelector('#filter-mag-response')
+let filterDesignPhase = document.querySelector('#filter-phase-response')
+
+
 let myp5 = new p5(s, 'circle-canvas')
 clearCheckBoxes()
 
-plottingCanvas = document.getElementById('filter-phase-response');
+plottingCanvas = document.getElementById('all-pass-phase');
 
 
 async function postData(url = '', data = {}) {
-    // Default options are marked with *
+    console.log(data)
     const response = await fetch(url, {
         method: 'POST',
         mode: 'cors',
-
         headers: {
             'Content-Type': 'application/json',
-            },
-
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
+        },
+        body: JSON.stringify(data),
+    })
+    return response.json()
 }
 
 
@@ -372,15 +375,11 @@ function addNewA() {
     var newA = document.getElementById('newValue').value
     document.getElementById(
         'listOfA'
-    ).innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue="${newA}"/>${newA}</li>`
-    document
-        .querySelector('#listOfA:last-child')
-        .addEventListener('input', getValue)
-    allPassCoeff.push(parseFloat(newA))
-    updateFilter()
+    ).innerHTML += `<li><input class = "target1" type="checkbox" data-avalue="${newA}"/>${newA}</li>`
+    clearCheckBoxes()
 }
 
-function updateFilter(){
+function updateFilter(allPassCoeff){
     postData('http://127.0.0.1:8080/getAllPassFilter', {
         a: allPassCoeff,
     }).then((data) => {
@@ -389,12 +388,24 @@ function updateFilter(){
 }
 
 function updateFilterPlotting(x, y){
-        Plotly.newPlot( plottingCanvas, [{ x, y }], { margin: { t: 0 } }, {staticPlot: true} );
+    plotlyLinePlot(plottingCanvas, x, y)
 }
 
-document.querySelectorAll('.target1').forEach(item => {
-    item.addEventListener('input', updateAllPassCoeff)
-})
+function plotlyLinePlot(container, x, y){
+    console.log(typeof x, typeof y)
+    Plotly.newPlot(
+        container,
+        [{ x: x, y: y }],
+        {
+            margin: { l: 20, r: 0, b: 20, t: 0 },
+            xaxis: { rangemode:'tozero', autorange:true},
+            yaxis: { rangemode:'tozero', autorange:true}
+        },
+        { staticPlot: true }
+    )
+}
+
+document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff)
 
 function arrayRemove(arr, value) {
     return arr.filter(function (ele) {
@@ -402,15 +413,14 @@ function arrayRemove(arr, value) {
     })
 }
 
-function updateAllPassCoeff(event){
-    let aValue = parseFloat(event.currentTarget.dataset.avalue)
-    let checked = event.target.checked
-    if (checked){
-        allPassCoeff.push(aValue)
-    }
-    else allPassCoeff =  arrayRemove(allPassCoeff, aValue)
-
-    updateFilter()
+function updateAllPassCoeff(){
+    let allPassCoeff = []
+    document.querySelectorAll('.target1').forEach(item => {
+        let aValue = parseFloat(item.dataset.avalue)
+        let checked = item.checked
+        if (checked) allPassCoeff.push(aValue)
+    })
+    updateFilter(allPassCoeff)
 }
 
 function clearCheckBoxes(){
@@ -424,3 +434,11 @@ function changeMode(e){
     unit_circle_mode = modesMap[e.target.id]
 }
 
+async function updateFilterDesign(data) {
+    data.gain = 1
+    let { w, angels, magnitude } = await postData(`${API}/getFilter`, data)
+    console.log("angles", angels)
+    console.log("mag", magnitude)
+    plotlyLinePlot(filterDesignMagnitude, w, magnitude)
+    plotlyLinePlot(filterDesignPhase, w, angels)
+}

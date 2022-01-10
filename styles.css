@@ -50,3 +50,30 @@
     display: block;
 }
 
+#filter-design{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+#filter-mag-response, #filter-phase-response{
+    width: 100%;
+    height: 100%;
+    max-width: 35%;
+}
+
+#design-unit-circle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#circle-control{
+    gap: 5px;
+}
+
+#circle-control, #circle-canvas{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}

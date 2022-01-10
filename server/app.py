@@ -12,13 +12,13 @@ CORS(app)
 def frequencyResponse(zeros, poles, gain):
     w, h = scipy.signal.freqz_zpk(zeros, poles, gain)
     magnitude = 20 * np.log10(np.abs(h))
-    angles = np.unwrap(np.angle(h))
-    return w/max(w), angles, magnitude
+    angels = np.unwrap(np.angle(h))
+    return w/max(w), angels, magnitude
 
 def phaseResponse(a):
     w, h = scipy.signal.freqz([-a, 1.0], [1.0, -a])
-    angles = np.unwrap(np.angle(h))
-    return w/max(w), angles
+    angels = np.unwrap(np.angle(h))
+    return w/max(w), angels
 
 def parseToComplex(pairs):
     complexNumbers = [0]*len(pairs)
@@ -40,31 +40,32 @@ def getFinalFilter():
         a = zerosAndPoles['a']
 
         w, allPassAngles = getAllPassFrequencyResponse(a)
-        w, filterAngles, filterMagnitude = frequencyResponse(zeros, poles, gain)
+        w, filterAngels, filterMagnitude = frequencyResponse(zeros, poles, gain)
 
-        finalAngles = np.add(allPassAngles, filterAngles)
+        finalAngles = np.add(allPassAngles, filterAngels)
         finalMagnitude = filterMagnitude*1
 
         response_data = {
                 'w': w.tolist(),
-                'angles': finalAngles.tolist(),
+                'angels': finalAngles.tolist(),
                 'magnitude': finalMagnitude.tolist()
             }
     return jsonify(response_data)
 
-@app.route('/getFilter', methods=['POST', 'GET'])
+@app.route('/getFilter', methods=['POST'])
 @cross_origin()
 def getFrequencyResponce():
     if request.method == 'POST':
         zerosAndPoles = json.loads(request.data)
-        zeros = zerosAndPoles['zeros']
-        poles = zerosAndPoles['pole']
+        zeros = parseToComplex(zerosAndPoles['zeros'])
+        poles = parseToComplex(zerosAndPoles['poles'])
         gain = zerosAndPoles['gain']
+        print(zeros, poles, gain)
 
         w, angles, magnitude = frequencyResponse(zeros, poles, gain)
         response_data = {
                 'w': w.tolist(),
-                'angles': angles.tolist(),
+                'angels': angles.tolist(),
                 'magnitude': magnitude.tolist()
             }
     return jsonify(response_data)
