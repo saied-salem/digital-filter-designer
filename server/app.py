@@ -39,7 +39,7 @@ def getFinalFilter():
         gain = zerosAndPoles['gain']
         a = zerosAndPoles['a']
 
-        w, allPassAngles = getAllPassFilter(a)
+        w, allPassAngles = getAllPassFrequencyResponse(a)
         w, filterAngles, filterMagnitude = frequencyResponse(zeros, poles, gain)
 
         finalAngles = np.add(allPassAngles, filterAngles)
@@ -69,7 +69,7 @@ def getFrequencyResponce():
             }
     return jsonify(response_data)
 
-def getAllPassFilter(filterCoeffients):
+def getAllPassFrequencyResponse(filterCoeffients):
         filter_angles = np.zeros(512)
         w = np.zeros(512)
         for coeffient in filterCoeffients:
@@ -82,7 +82,7 @@ def getAllPassFilterData():
     if request.method == 'POST':
         data = json.loads(request.data)
         filterCoeffients = data['a']
-        w, filter_angles = getAllPassFilter(filterCoeffients)
+        w, filter_angles = getAllPassFrequencyResponse(filterCoeffients)
         response_data = {
             'w': w.tolist(),
             'angles': filter_angles.tolist(),

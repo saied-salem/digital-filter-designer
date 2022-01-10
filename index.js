@@ -2,9 +2,17 @@ let unit_circle_center, radius
 let curr_picked
 let filter_plane
 let allPassCoeff = []
-const CANVAS_SIZE = 500
-const NONE_PICKED = { point: null, conjugate: null }
+let unit_circle_mode
+const CANVAS_SIZE = 300
+const NONE_PICKED = { item: {point: null, conjugate: null}, index: -1 }
 const Mode = { ZERO : 0, POLE : 1, CONJ_ZERO : 2, CONJ_POLE : 3 }
+const Conj_Modes = {2: Mode.CONJ_ZERO, 3: Mode.CONJ_POLE}
+const modesMap = {
+    'real-zero': Mode.ZERO,
+    'real-pole': Mode.POLE,
+    'conjugate-zeros': Mode.CONJ_ZERO,
+    'conjugate-poles': Mode.CONJ_POLE,
+}
 
 const s = (p5_inst) => {
     p5_inst.setup = function () {
@@ -17,6 +25,7 @@ const s = (p5_inst) => {
             CANVAS_SIZE / 2
         )
         curr_picked = NONE_PICKED
+        unit_circle_mode = Mode.ZERO
         filter_plane = new FilterPlane()
 
         p5_inst.noLoop()
@@ -33,33 +42,35 @@ const s = (p5_inst) => {
     }
 
     p5_inst.mouseClicked = function () {
+        console.log(unit_circle_mode)
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
         if (isInsideCircle(p, unit_circle_center, radius, 0)) {
             let found = filter_plane.therePoint(p)
-            if (found.point) {
+            if (found.item.point) {
                 console.log("found")
                 curr_picked = found
             }
-            else filter_plane.addItem(p, mode = Mode.CONJ_POLE)
+            else filter_plane.addItem(p, mode = unit_circle_mode)
             p5_inst.redraw()
         }
         else if (curr_picked != NONE_PICKED) {
             curr_picked = NONE_PICKED
             p5_inst.redraw()
         }
+        console.log(filter_plane.getZerosPoles(radius))
         return true
     }
 
     p5_inst.mouseDragged = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
         if (curr_picked != NONE_PICKED && isInsideCircle(p, unit_circle_center, radius, 0)) {
-            if(!curr_picked.conjugate){
+            if(!curr_picked.item.conjugate){
                 p.y = unit_circle_center.y
-                curr_picked.point.center = p
+                curr_picked.item.point.center = p
             }
             else{
-                curr_picked.point.center = p
-                curr_picked.conjugate.center = curr_picked.point.getConjugate().center
+                curr_picked.item.point.center = p
+                curr_picked.item.conjugate.center = curr_picked.item.point.getConjugate().center
             }
         }
         p5_inst.redraw()
@@ -67,7 +78,7 @@ const s = (p5_inst) => {
 
     function drawPoints() {
         filter_plane.items.forEach(({ point, conjugate }) => {
-            if (point == curr_picked.point) {
+            if (point == curr_picked.item.point) {
                 point.draw(undefined, undefined, (picked = true))
                 if(conjugate) conjugate.draw(undefined, undefined, (picked = true))
             }
@@ -80,17 +91,22 @@ const s = (p5_inst) => {
     }
 
     function drawUnitCricle() {
-        p5_inst.background('#fff')
+        p5_inst.background('rgba(0,255,0, 0)')
         p5_inst.stroke(255)
-        p5_inst.fill('#000')
+        p5_inst.fill('#fff')
         p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 2)
+        for(let i = 1; i <= 3; i++){
+            p5_inst.stroke("#5b5a5a")
+            p5_inst.noFill()
+            p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 2*i/3)
+        }
         const axes = [
             p5_inst.createVector(radius, 0),
             p5_inst.createVector(-radius, 0),
             p5_inst.createVector(0, radius),
             p5_inst.createVector(0, -radius)
         ]
-        axes.forEach((axis) => { arrow(unit_circle_center, axis, '#fff') })
+        axes.forEach((axis) => { arrow(unit_circle_center, axis, '#000') })
     }
 
     function isInsideCircle(p, center, radius, error) {
@@ -98,7 +114,7 @@ const s = (p5_inst) => {
     }
 
 
-    function cross(center, size = 10, fill = '#fff', weight = 2, stroke = '#fff') {
+    function cross(center, size = 8, fill = '#fff', weight = 2, stroke = '#fff') {
         const lines = {
             top_right: p5_inst.createVector(size / 2, -size / 2),
             top_left: p5_inst.createVector(-size / 2, -size / 2),
@@ -120,7 +136,7 @@ const s = (p5_inst) => {
         let arrowSize = 7
         p5_inst.push()
         p5_inst.stroke(myColor)
-        p5_inst.strokeWeight(2)
+        p5_inst.strokeWeight(1.5)
         p5_inst.fill(myColor)
         p5_inst.translate(base.x, base.y)
         p5_inst.line(0, 0, vec.x, vec.y)
@@ -144,6 +160,10 @@ const s = (p5_inst) => {
             return (this.center.y - this.origin.y) / y_max
         }
 
+        getRelativePosition(max){
+            return {x: this.getRelativeX(max), y: this.getRelativeY(max)}
+        }
+
         getConjugate() {
             let conjugate_center = p5_inst.createVector(
                 this.center.x,
@@ -162,10 +182,11 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 12, fill = '#ffb939', picked = false) {
+        draw(size = 10, fill = '#d4d4d6', picked = false) {
             console.log(picked)
             p5_inst.push()
-            if (picked) fill = '#645ffb'
+            if (picked) fill = '#0000ff'
+            p5_inst.stroke("#767575")
             p5_inst.fill(fill)
             p5_inst.circle(this.center.x, this.center.y, size)
             p5_inst.pop()
@@ -182,9 +203,9 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 12, fill = '#fff939', picked = false) {
+        draw(size = 10, fill = '#484848', picked = false) {
             picked
-                ? cross(this.center, size, fill, 2, '#645ffb')
+                ? cross(this.center, size, fill, 2, '#0000ff')
                 : cross(this.center, size, fill, 2, fill)
         }
 
@@ -199,20 +220,32 @@ const s = (p5_inst) => {
             this.items = []
         }
 
-        therePoint(p, error = 10) {
+        therePoint(p, error = 5) {
             let real_p = p5_inst.createVector(p.x, unit_circle_center.y)
-            for (let item of this.items) {
+            for (let i = 0; i < this.items.length; i++) {
+                let item = this.items[i]
                 if (
                     isInsideCircle(p, item.point.center, 8, error) ||
                     item.conjugate && isInsideCircle(p, item.conjugate.center, 8, error)
                 ) {
-                    return item
+                    return {item, index: i}
                 }
             }
-            for (let item of this.items) {
-                if (isInsideCircle(real_p, item.point.center, 8, error)) return item
+            for ( let i = 0; i < this.items.length && !(unit_circle_mode in Conj_Modes); i++) {
+                let item = this.items[i]
+                if (isInsideCircle(real_p, item.point.center, 8, error))
+                    return { item, index: i }
             }
-            return { point: null, conjugate: null }
+            return { item: {point: null, conjugate: null}, index: -1 }
+        }
+
+        getZerosPoles(max){
+            return this.items.map(({point, conjugate}) => {
+                return [
+                    point.getRelativePosition(max),
+                    conjugate ? conjugate.getRelativePosition(max) : null,
+                ]
+            }).flat()
         }
 
         addItem(p, mode) {
@@ -224,15 +257,24 @@ const s = (p5_inst) => {
         }
 
         removeZeros() {
-            this.items = this.items.filter(item => { item.point instanceof Pole })
+            this.items = this.items.filter(item => { return item.point instanceof Pole })
+            p5_inst.redraw()
         }
 
         removePoles() {
-            this.items = this.items.filter(item => { item.point instanceof Zero })
+            this.items = this.items.filter(item => { return item.point instanceof Zero })
+            p5_inst.redraw()
         }
 
         removeAll() {
             this.items = []
+            p5_inst.redraw()
+        }
+
+        remove(index) {
+            if (index < 0) return
+            this.items.splice(index, 1)
+            p5_inst.redraw()
         }
 
         #addZero(p) {
@@ -263,6 +305,26 @@ const s = (p5_inst) => {
     }
 
 }
+
+document.querySelectorAll('.mode-control').forEach(item => {
+    item.addEventListener('click', changeMode)
+})
+
+document
+    .querySelector('#remove-all')
+    .addEventListener('click', () => filter_plane.removeAll())
+
+document
+    .querySelector('#remove-zeros')
+    .addEventListener('click', () => filter_plane.removeZeros())
+
+document
+    .querySelector('#remove-poles')
+    .addEventListener('click', () => filter_plane.removePoles())
+
+document
+    .querySelector('#remove')
+    .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
 let myp5 = new p5(s, 'circle-canvas')
 clearCheckBoxes()
@@ -299,7 +361,7 @@ function addNewA() {
     var newA = document.getElementById('newValue').value
     document.getElementById(
         'listOfA'
-    ).innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue=  "${newA}"   />${newA}</li>`
+    ).innerHTML += `<li><input class = "target1" type="checkbox" checked  data-avalue="${newA}"/>${newA}</li>`
     document
         .querySelector('#listOfA:last-child')
         .addEventListener('input', getValue)
@@ -345,3 +407,9 @@ function clearCheckBoxes(){
         item.checked = false;
     })
 }
+
+
+function changeMode(e){
+    unit_circle_mode = modesMap[e.target.id]
+}
+
