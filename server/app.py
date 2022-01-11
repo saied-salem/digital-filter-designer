@@ -13,12 +13,12 @@ def frequencyResponse(zeros, poles, gain):
     w, h = scipy.signal.freqz_zpk(zeros, poles, gain)
     magnitude = 20 * np.log10(np.abs(h))
     angels = np.unwrap(np.angle(h))
-    return w/max(w), angels, magnitude
+    return w/max(w), np.around(angels, decimals=3), np.around(magnitude, decimals=3)
 
 def phaseResponse(a):
     w, h = scipy.signal.freqz([-a, 1.0], [1.0, -a])
     angels = np.zeros(512) if a==1 else np.unwrap(np.angle(h))
-    return w/max(w), angels
+    return w/max(w), np.around(angels, decimals=3)
 
 def parseToComplex(pairs):
     complexNumbers = [0]*len(pairs)
