@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8" />
+	<title>Index</title>
+	<script src="lib/danfo.min.js"></script>
+	<script src="lib/p5.min.js"></script>
+    <script src="lib/plotly-2.8.3.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+</head>
+
+<body>
+	<section id="filter-design">
+		<div id="design-unit-circle">
+			<div id="circle-canvas"></div>
+			<div id="circle-control">
+				<button id="real-zero" class="btn-cricle-control mode-control">Real Zero</button>
+				<button id="real-pole" class="btn-cricle-control mode-control">Real Pole</button>
+				<button id="conjugate-zeros" class="btn-cricle-control mode-control">Conjugate Zeros</button>
+				<button id="conjugate-poles" class="btn-cricle-control mode-control">Conjugate Poles</button>
+				<button id="remove" class="btn-cricle-control">Remove</button>
+				<button id="remove-all" class="btn-cricle-control">Remove All</button>
+				<button id="remove-zeros" class="btn-cricle-control">Remove Zeros</button>
+				<button id="remove-poles" class="btn-cricle-control">Remove Poles</button>
+			</div>
+		</div>
+		<div id="filter-mag-response"> </div>
+		<div id="filter-phase-response"> </div>
+	</section>
+	<section>
+		<div id="all-pass-container">
+			<div id="list1" class="dropdown-check-list" tabindex="100">
+				<span class="anchor">Select 'a' for AllPass Filter</span>
+				<ul id="listOfA" class="items">
+					<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9 </li>
+					<li><input class="target1" type="checkbox" data-avalue="-0.495" />-0.495</li>
+					<li><input class="target1" type="checkbox" data-avalue="0.0" />0.0</li>
+					<li><input class="target1" type="checkbox" data-avalue="0.49499" />0.49499</li>
+					<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
+				</ul>
+			</div>
+			<input type="text" id="newValue" value="">
+			<button onclick="addNewA()">submit</button>
+		</div>
+		<div id="all-pass-circle"> </div>
+		<div id="all-pass-phase"> </div>
+	</section>
+	<section>
+		<input type="file" id="csvFile" accept=".csv" />
+		<button value="Submit" id= "csv-submitter">Submit</button>
+		<div id="original-signal"></div>
+		<div id="filtered-signal"></div>
+	</section>
+
+
+	<script src="index.js"></script>
+	<script src="unitcricle.js"></script>
+	<script src="realtimeplotting.js"></script>
+</body>
+
+</html>
