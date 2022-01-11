@@ -27,7 +27,6 @@ const s = (p5_inst) => {
         )
         curr_picked = NONE_PICKED
         unit_circle_mode = Mode.ZERO
-        console.log("befor filter_plane instance")
         filter_plane = new FilterPlane()
 
         p5_inst.noLoop()
@@ -56,7 +55,6 @@ const s = (p5_inst) => {
             curr_picked = NONE_PICKED
             p5_inst.redraw()
         }
-        // console.log(filter_plane.getZerosPoles(radius))
         updateFilterDesign(filter_plane.getZerosPoles(radius))
         return true
     }
@@ -73,6 +71,7 @@ const s = (p5_inst) => {
                 curr_picked.item.conjugate.center = curr_picked.item.point.getConjugate().center
             }
         }
+        updateFilterDesign(filter_plane.getZerosPoles(radius))
         p5_inst.redraw()
     }
 
@@ -93,7 +92,7 @@ const s = (p5_inst) => {
     function drawUnitCricle() {
         p5_inst.background('rgba(0,255,0, 0)')
         p5_inst.stroke(255)
-        p5_inst.fill('#fff')
+        p5_inst.fill('#ccc')
         p5_inst.circle(unit_circle_center.x, unit_circle_center.y, radius * 2)
         for(let i = 1; i <= 3; i++){
             p5_inst.stroke("#5b5a5a")
@@ -182,9 +181,9 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 10, fill = '#d4d4d6', picked = false) {
+        draw(size = 10, fill = '#484848', picked = false) {
             p5_inst.push()
-            if (picked) fill = '#0000ff'
+            if (picked) fill = '#fd413c'
             p5_inst.stroke("#767575")
             p5_inst.fill(fill)
             p5_inst.circle(this.center.x, this.center.y, size)
@@ -204,7 +203,7 @@ const s = (p5_inst) => {
 
         draw(size = 10, fill = '#484848', picked = false) {
             picked
-                ? cross(this.center, size, fill, 2, '#0000ff')
+                ? cross(this.center, size, fill, 2, '#fd413c')
                 : cross(this.center, size, fill, 2, fill)
         }
 
@@ -340,5 +339,7 @@ document
     .querySelector('#remove')
     .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
-let myp5 = new p5(s, 'circle-canvas')
-console.log("unit circle done")
+let filterCanvas = new p5(s, 'circle-canvas')
+
+let allPassCanvas = new p5(s, 'all-pass-circle-canvas')
+console.log(filterCanvas)

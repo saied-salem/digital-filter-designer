@@ -13,7 +13,8 @@
 
 <body>
 	<section id="filter-design">
-		<div id="design-unit-circle">
+		<div class="box" id="design-unit-circle">
+			<h2 id="circle-title">Digital Filter Design</h2>
 			<div id="circle-canvas"></div>
 			<div id="circle-control">
 				<button id="real-zero" class="btn-cricle-control mode-control">Real Zero</button>
@@ -26,26 +27,45 @@
 				<button id="remove-poles" class="btn-cricle-control">Remove Poles</button>
 			</div>
 		</div>
-		<div id="filter-mag-response"> </div>
-		<div id="filter-phase-response"> </div>
-	</section>
-	<section>
-		<div id="all-pass-container">
-			<div id="list1" class="dropdown-check-list" tabindex="100">
-				<span class="anchor">Select 'a' for AllPass Filter</span>
-				<ul id="listOfA" class="items">
-					<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9 </li>
-					<li><input class="target1" type="checkbox" data-avalue="-0.495" />-0.495</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.0" />0.0</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.49499" />0.49499</li>
-					<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
-				</ul>
-			</div>
-			<input type="text" id="newValue" value="">
-			<button onclick="addNewA()">submit</button>
+		<div class="box" id="filter-response">
+			<h4 class="freq-response-title title">Magnitude Response</h4>
+			<div id="filter-mag-response"> </div>
+			<h4 class="freq-response-title title">Phase Response</h2>
+			<div id="filter-phase-response"> </div>
 		</div>
-		<div id="all-pass-circle"> </div>
-		<div id="all-pass-phase"> </div>
+	</section>
+	<br/>
+	<section id="all-pass">
+		<div class="box" id="all-pass-unit-circle">
+			<h2 id="all-pass-title" class="title">All Pass Filter Design</h2>
+			<div id="all-pass-circle-canvas"></div>
+			<div id="all-pass-container">
+				<div id="list1" class="dropdown-check-list" tabindex="100">
+					<span class="anchor btn">All Pass Filter Coefficients</span>
+					<ul id="listOfA" class="items">
+						<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9 </li>
+						<li><input class="target1" type="checkbox" data-avalue="-0.495" />-0.495</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.0" />0.0</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.49499" />0.49499</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
+					</ul>
+				</div>
+				<input range="0-9" min="-1" max="1" type="number" step="0.01" id="new-value" value="">
+				<button id="new-all-pass-coef" class="btn">submit</button>
+			</div>
+		</div>
+
+		<div class="box" id="all-pass-response">
+			<div id="all-pass-response-container">
+				<h4 class="title" id="all-pass-response-title">All Pass Phase Response</h4>
+				<div id="all-pass-phase-response"> </div>
+			</div>
+		
+			<div id="final-filter-response">
+				<h4 id="final-filter-response-title" class="title">Final Phase Response</h4>
+				<div id="final-filter-phase-response"> </div>
+			</div>
+		</div>
 	</section>
 	<section>
 		<input type="file" id="csvFile" accept=".csv" />

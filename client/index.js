@@ -1,13 +1,13 @@
 const filterDesignMagnitude = document.querySelector('#filter-mag-response')
 const filterDesignPhase = document.querySelector('#filter-phase-response')
-const plottingCanvas = document.getElementById('all-pass-phase');
+const allPassPhase = document.getElementById('all-pass-phase-response');
 const checkList = document.getElementById('list1');
 
 
 document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff)
+document.querySelector('#new-all-pass-coef').addEventListener('click', addNewA)
 
 clearCheckBoxes()
-
 async function postData(url = '', data = {}) {
     const response = await fetch(url, {
         method: 'POST',
@@ -20,11 +20,16 @@ async function postData(url = '', data = {}) {
     return response.json()
 }
 
+        
 async function updateFilterDesign(data) {
     data.gain = 1
     let { w, angels, magnitude } = await postData(`${API}/getFilter`, data)
-    plotlyLinePlot(filterDesignMagnitude, w, magnitude)
-    plotlyLinePlot(filterDesignPhase, w, angels)
+    plotlyMultiLinePlot(filterDesignMagnitude, [
+        { x: w, y: magnitude, line: { color: '#febc2c' } },
+    ])
+    plotlyMultiLinePlot(filterDesignPhase, [
+        { x: w, y: angels, line: { color: '#fd413c' } },
+    ])
 }
 
 checkList.getElementsByClassName('anchor')[0].onclick = function () {
@@ -35,7 +40,11 @@ checkList.getElementsByClassName('anchor')[0].onclick = function () {
 }
 
 function addNewA() {
-    var newA = document.getElementById('newValue').value
+    var newA = document.getElementById('new-value').value
+    if(newA > 1 || newA < -1){
+        alert(`invalid ${newA} as Filter Coefficient`)
+        return
+    }
     document.getElementById(
         'listOfA'
     ).innerHTML += `<li><input class = "target1" type="checkbox" data-avalue="${newA}"/>${newA}</li>`
@@ -51,17 +60,19 @@ function updateFilter(allPassCoeff){
 }
 
 function updateFilterPlotting(x, y){
-    plotlyLinePlot(plottingCanvas, x, y)
+    plotlyMultiLinePlot(allPassPhase, [{x, y}])
 }
 
-function plotlyLinePlot(container, x, y){
+function plotlyMultiLinePlot(container, data){
     Plotly.newPlot(
         container,
-        [{ x: x, y: y }],
+        data,
         {
             margin: { l: 20, r: 0, b: 20, t: 0 },
             xaxis: { rangemode:'tozero', autorange:true},
-            yaxis: { rangemode:'tozero', autorange:true}
+            yaxis: { rangemode:'tozero', autorange:true},
+            plot_bgcolor: "#111111",
+            paper_bgcolor: "#111111"
         },
         { staticPlot: true }
     )

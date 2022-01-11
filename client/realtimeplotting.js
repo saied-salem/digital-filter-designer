@@ -3,6 +3,8 @@ const csvFile = document.getElementById('csvFile')
 const button = document.getElementById('sent_zeros_poles')
 let signal_x, signal_y
 
+updateFilterDesign({zeros: [], poles: []})
+
 function getCol(matrix, col) {
     var column = []
     for (var i = 0; i < matrix.length; i++) {

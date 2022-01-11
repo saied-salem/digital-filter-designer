@@ -1,28 +1,31 @@
+html{
+    background-color: #212529;
+}
 .dropdown-check-list {
     display: inline-block;
 }
 
 .dropdown-check-list .anchor {
+    text-align: center;
     position: relative;
     cursor: pointer;
     display: inline-block;
-    padding: 5px 50px 5px 10px;
-    border: 1px solid #ccc;
+    font-size: 12px;
 }
+.btn-cricle-control, .dropdown-check-list, .anchor{
+    background-color: #212529;
+    color: #ededee;
+    font-size: small;
+    font-weight: 600;
+    border: #212529;
+    padding: 5px;
+    border-radius: 4px;
+}
+
 
 .dropdown-check-list .anchor:after {
     position: absolute;
     content: "";
-    border-left: 2px solid black;
-    border-top: 2px solid black;
-    padding: 5px;
-    right: 10px;
-    top: 20%;
-    -moz-transform: rotate(-135deg);
-    -ms-transform: rotate(-135deg);
-    -o-transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    transform: rotate(-135deg);
 }
 
 .dropdown-check-list .anchor:active:after {
@@ -34,7 +37,6 @@
     padding: 2px;
     display: none;
     margin: 0;
-    border: 1px solid #ccc;
     border-top: none;
 }
 
@@ -43,14 +45,16 @@
 }
 
 .dropdown-check-list.visible .anchor {
-    color: #0094ff;
+    font-weight: bold;
+    font-size: 12px;
+    color: #febc2c;
 }
 
 .dropdown-check-list.visible .items {
     display: block;
 }
 
-#filter-design{
+#filter-design, #all-pass{
     display: flex;
     flex-direction: row;
     column-gap: 10px;
@@ -59,21 +63,92 @@
 #filter-mag-response, #filter-phase-response{
     width: 100%;
     height: 100%;
-    max-width: 35%;
 }
 
-#design-unit-circle{
+.box {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background-color: #2a2e32;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#filter-response, #all-pass-response{
+    min-width: 60%;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+#final-filter-response{
+    min-width: 50%;
+}
+
+#all-pass-response{
+    flex-direction: row;
 }
 #circle-control{
     gap: 5px;
 }
 
-#circle-control, #circle-canvas{
+#circle-control, #circle-canvas, #all-pass-unit-circle{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
+}
+
+.btn-cricle-control:hover{
+    color: #febc2c;
+    cursor: pointer;
+}
+
+#circle-title, #all-pass-title{
+    text-align: center;
+    color: #ededee;
+}
+
+.freq-response-title, .title{
+    margin: 0;
+    color: #ededee;
+}
+
+.btn{
+    background-color: #212529;
+    color: #ededee;
+    font-size: small;
+    border: #212529;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+#new-all-pass-coef{
+    padding: 10px;
+    font-weight: 600;
+}
+
+.btn:hover{
+    color: #febc2c;
+    cursor: pointer;
+}
+
+#new-value{
+    max-width: 100px;
+    background-color: #212529;
+    color: #ededee;
+    font-size: small;
+    border: #212529;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+#all-pass-response-container{
+    min-width: 48%;
+    max-height: 48%;
+}
+
+#all-pass-response-title, #final-filter-response-title{
+    text-align: center;
+    margin-bottom: 10px;
 }
