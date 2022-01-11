@@ -101,23 +101,15 @@ def hello_world():
 def differenceEquationCoefficients():
     if request.method == 'POST':
 
-        zeros_and_poles = json.loads(request.data)
-        z = zeros_and_poles['zeros']
-        p = zeros_and_poles['poles']
+        zerosAndPoles = json.loads(request.data)
+        zeros = parseToComplex(zerosAndPoles['zeros'])
+        poles = parseToComplex(zerosAndPoles['poles'])
+        b, a = scipy.signal.zpk2tf(zeros, poles, 1)
 
-        print("zeros:",z)
-        print("poles:",p)
-
-        frequency_response = scipy.signal.ZerosPolesGain(z,p,1)
-        transfer_function = frequency_response.to_tf()
-
-        num = transfer_function.num
-        den = transfer_function.den
         response_data = {
-            'b': num.tolist(),
-            'a': den.tolist()
+            'b': b.flatten().tolist(),
+            'a': a.flatten().tolist()
         }
-
 
         return jsonify(response_data)
 
