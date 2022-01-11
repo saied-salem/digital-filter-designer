@@ -105,6 +105,9 @@ def differenceEquationCoefficients():
         z = zeros_and_poles['zeros']
         p = zeros_and_poles['poles']
 
+        print("zeros:",z)
+        print("poles:",p)
+
         frequency_response = scipy.signal.ZerosPolesGain(z,p,1)
         transfer_function = frequency_response.to_tf()
 
@@ -114,6 +117,7 @@ def differenceEquationCoefficients():
             'b': num.tolist(),
             'a': den.tolist()
         }
+
 
         return jsonify(response_data)
 

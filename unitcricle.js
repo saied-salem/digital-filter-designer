@@ -27,6 +27,7 @@ const s = (p5_inst) => {
         )
         curr_picked = NONE_PICKED
         unit_circle_mode = Mode.ZERO
+        console.log("befor filter_plane instance")
         filter_plane = new FilterPlane()
 
         p5_inst.noLoop()
@@ -55,7 +56,7 @@ const s = (p5_inst) => {
             curr_picked = NONE_PICKED
             p5_inst.redraw()
         }
-        console.log(filter_plane.getZerosPoles(radius))
+        // console.log(filter_plane.getZerosPoles(radius))
         updateFilterDesign(filter_plane.getZerosPoles(radius))
         return true
     }
@@ -340,3 +341,4 @@ document
     .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
 let myp5 = new p5(s, 'circle-canvas')
+console.log("unit circle done")

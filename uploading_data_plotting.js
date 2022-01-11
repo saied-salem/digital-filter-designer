@@ -1,4 +1,5 @@
-const myForm = document.getElementById("myForm");
+// const myForm = document.getElementById("myForm");
+const submit_btn = document.getElementById("csv-submitter");
 const csvFile = document.getElementById("csvFile");
 const button = document.getElementById("sent_zeros_poles"); 
 let x_column 
@@ -6,11 +7,13 @@ let y_column
 let y_filtterd
 let x
 let y
+let zeros
+let poles
 let dx
 let b = [0.21546504, 0.01546504];
 let a = [ 1.        , -0.06906992];
-let zeros=[1, 2, 4, 5, 7]
-let poles=[-2, 4, 8, 19]
+console.log(filter_plane)
+
 
 function getCol(matrix, col){
     var column = [];
@@ -35,16 +38,36 @@ function getCol(matrix, col){
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
-async function get_differenceEquationCoefficients(){
-  response = await postData("http://127.0.0.1:8080/differenceEquationCoefficients", {
-          zeros: zeros,
-          poles: poles
+function readData(){
+  const input = csvFile.files[0];
+
+  dfd.read_csv(input).then((df) => {
+    let tf_tensor = df.tensor
+    x_column = getCol(df.values,0)
+    dx = x_column[2]-x_column[1];
+    y_column = getCol(df.values,1)
+
+    y_filtterd = y_column.slice(0,a.length)
+    console.log("printing x_column")
+    // console.log(x_column)
     })
-  console.log(response);
+}
+
+
+async function get_differenceEquationCoefficients(){
+  
+  console.log("b:", b)
+  return {a,b};
 } 
-button.addEventListener("click",function(e){
-  e.preventDefault();
-  get_differenceEquationCoefficients()
+// button.addEventListener("click",function(e){
+//   e.preventDefault();
+
+
+// })
+csvFile.addEventListener("change",function(e){
+  console.log(e.target.files)
+  readData()
+  // console.log(x_column)
 
 })
 
@@ -68,22 +91,38 @@ function filter(a,b,n,y,y_filtterd){
   
 }
 
-myForm.addEventListener("submit", function (e) {
+submit_btn.addEventListener("click",  async function (e) {
   e.preventDefault();
-  const input = csvFile.files[0];
-
-  dfd.read_csv(input).then((df) => {
-    let tf_tensor = df.tensor
-    x_column = getCol(df.values,0)
-    dx = x_column[2]-x_column[1];
-    y_column = getCol(df.values,1)
-
-    y_filtterd = y_column.slice(0,a.length)
+  console.log("submitt botttunnnnn")
 
     let x=x_column[0]
     let y=y_column[0]
+    console.log("y:",y)
+    // console.log("y:",y_column)
 
-    console.log(x_column)
+    zeros_and_poles =  filter_plane.getZerosPoles(radius)
+    
+    zeros = zeros_and_poles.zeros
+    poles = zeros_and_poles.poles
+
+
+    console.log("zeros:",zeros)
+    response = await postData("http://127.0.0.1:8080/differenceEquationCoefficients", {
+            zeros: zeros,
+            poles: poles
+      })
+  
+    // console.log(response);
+    a = response["a"];
+    b = response["b"];
+  
+
+    if(zeros.length===0 || poles.length===0){
+      return ;
+    }
+
+
+    // console.log(x_column)
     // document.write(JSON.stringify(x_column));
     // console.log(x_column)
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,8 +146,8 @@ myForm.addEventListener("submit", function (e) {
     }]
   
     
-    Plotly.newPlot('graph', data,layout);  
-    Plotly.newPlot('filterd', filtter_data,layout); 
+    Plotly.newPlot('original-signal', data,layout);  
+    Plotly.newPlot('filtered-signal', filtter_data,layout); 
     
     var cnt = 1;
     
@@ -144,19 +183,19 @@ myForm.addEventListener("submit", function (e) {
             }
           };
       
-      Plotly.relayout('graph', minuteView);
-      Plotly.extendTraces('graph', update, [0])
+      Plotly.relayout('original-signal', minuteView);
+      Plotly.extendTraces('original-signal', update, [0])
+      console.log("not plooooootting")
+      Plotly.relayout('filtered-signal', minuteView);
   
-      Plotly.relayout('filterd', minuteView);
-  
-      Plotly.extendTraces('filterd', update_filterd, [0])
+      Plotly.extendTraces('filtered-signal', update_filterd, [0])
   
       cnt++;
       if(cnt === 400) clearInterval(interval);
     }, 40);
 })
 
-});
+
 
 // let x=x_column[0]
 // let y=y_column[0]

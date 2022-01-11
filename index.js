@@ -9,7 +9,7 @@ document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff)
 clearCheckBoxes()
 
 async function postData(url = '', data = {}) {
-    console.log(data)
+    // console.log(data)
     const response = await fetch(url, {
         method: 'POST',
         mode: 'cors',
@@ -24,8 +24,8 @@ async function postData(url = '', data = {}) {
 async function updateFilterDesign(data) {
     data.gain = 1
     let { w, angels, magnitude } = await postData(`${API}/getFilter`, data)
-    console.log("angles", angels)
-    console.log("mag", magnitude)
+    // console.log("angles", angels)
+    // console.log("mag", magnitude)
     plotlyLinePlot(filterDesignMagnitude, w, magnitude)
     plotlyLinePlot(filterDesignPhase, w, angels)
 }
@@ -58,7 +58,7 @@ function updateFilterPlotting(x, y){
 }
 
 function plotlyLinePlot(container, x, y){
-    console.log(typeof x, typeof y)
+    // console.log(typeof x, typeof y)
     Plotly.newPlot(
         container,
         [{ x: x, y: y }],

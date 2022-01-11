@@ -2,8 +2,10 @@
 <html>
 
 <head>
+
 	<meta charset="utf-8" />
 	<title>Index</title>
+	<script src="lib/danfo.min.js"></script>
 	<script src="lib/p5.min.js"></script>
     <script src="lib/plotly-2.8.3.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
@@ -46,6 +48,10 @@
 		<div id="all-pass-phase"> </div>
 	</section>
 	<section>
+		<input type="file" id="csvFile" accept=".csv" />
+		<br />
+		<button value="Submit" id= "csv-submitter">Submit</button>
+		<button id="sent_zeros_poles">sent_zeros_poles</button>
 		<div id="original-signal"></div>
 		<div id="filtered-signal"></div>
 	</section>
@@ -53,6 +59,7 @@
 
 	<script src="index.js"></script>
 	<script src="unitcricle.js"></script>
+	<script src="uploading_data_plotting.js"></script>
 </body>
 
 </html>
