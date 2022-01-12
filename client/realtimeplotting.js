@@ -2,6 +2,16 @@ const submit_btn = document.getElementById('csv-submitter')
 const csvFile = document.getElementById('csvFile')
 const button = document.getElementById('sent_zeros_poles')
 let signal_x, signal_y
+let slider = document.getElementById("myRange");
+let output = document.getElementById("demo");
+output.innerHTML = slider.value;
+let speed = slider.value;
+
+slider.oninput = function() {
+    output.innerHTML = this.value;
+    speed = slider.value;
+    console.log(speed)
+  }
 
 updateFilterDesign({zeros: [], poles: []})
 
@@ -127,8 +137,9 @@ function realTimePlotting(y_filtterd, dx, a, b) {
 
 
         cnt++
+        speed = slider.value;
         if (cnt === 400) clearInterval(interval)
-    }, 40)
+    }, speed)
 }
 setTimeout(() => {
     updateAllPassCoeff()
