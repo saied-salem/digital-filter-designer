@@ -183,9 +183,9 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 10, fill = '#484848', picked = false) {
+        draw(size = 10, fill = '#febc2c', picked = false) {
             p5_inst.push()
-            if (picked) fill = '#fd413c'
+            if (picked) fill = '#1f77b4'
             p5_inst.stroke("#767575")
             p5_inst.fill(fill)
             p5_inst.circle(this.center.x, this.center.y, size)
@@ -203,9 +203,9 @@ const s = (p5_inst) => {
             super(center, origin)
         }
 
-        draw(size = 10, fill = '#484848', picked = false) {
+        draw(size = 10, fill = '#fd413c', picked = false) {
             picked
-                ? cross(this.center, size, fill, 2, '#fd413c')
+                ? cross(this.center, size, fill, 2, '#1f77b4')
                 : cross(this.center, size, fill, 2, fill)
         }
 
