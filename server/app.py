@@ -35,8 +35,8 @@ def getFinalFilter():
         zerosAndPoles = json.loads(request.data)
         zeros = parseToComplex(zerosAndPoles['zeros'])
         poles = parseToComplex(zerosAndPoles['poles'])
+        gain = 1
 
-        gain = zerosAndPoles['gain']
         a = zerosAndPoles['a']
 
         w, allPassAngles = getAllPassFrequencyResponse(a)
@@ -86,7 +86,7 @@ def getAllPassFilterData():
         w, filter_angles = getAllPassFrequencyResponse(filterCoeffients)
         response_data = {
             'w': w.tolist(),
-            'angles': filter_angles.tolist(),
+            'angels': filter_angles.tolist(),
         }
         return jsonify(response_data)
     else:

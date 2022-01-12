@@ -38,7 +38,6 @@
 	<section id="all-pass">
 		<div class="box" id="all-pass-unit-circle">
 			<h2 id="all-pass-title" class="title">All Pass Filter Design</h2>
-			<div id="all-pass-circle-canvas"></div>
 			<div id="all-pass-container">
 				<div id="list1" class="dropdown-check-list" tabindex="100">
 					<span class="anchor btn">All Pass Filter Coefficients</span>
@@ -67,11 +66,13 @@
 			</div>
 		</div>
 	</section>
-	<section>
-		<input type="file" id="csvFile" accept=".csv" />
-		<button value="Submit" id= "csv-submitter">Submit</button>
-		<div id="original-signal"></div>
-		<div id="filtered-signal"></div>
+	<section id="real-time-filter">
+		<div class="box" id="real-time-filter-container">
+			<input type="file" id="csvFile" accept=".csv" />
+			<button value="Submit" id= "csv-submitter">Submit</button>
+			<div id="original-signal"></div>
+			<div id="filtered-signal"></div>
+		</div>
 	</section>
 
 

@@ -54,7 +54,7 @@ html{
     display: block;
 }
 
-#filter-design, #all-pass{
+#filter-design, #all-pass, #real-time-filter{
     display: flex;
     flex-direction: row;
     column-gap: 10px;
@@ -96,12 +96,15 @@ html{
     gap: 5px;
 }
 
-#circle-control, #circle-canvas, #all-pass-unit-circle{
+#circle-control, #circle-canvas, #all-pass-unit-circle, #real-time-filter-container{
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
+    gap: 5;
+}
+#all-pass-unit-circle{
     gap: 10px;
 }
 
@@ -149,7 +152,7 @@ html{
     border-radius: 4px;
 }
 
-#all-pass-response-container{
+#all-pass-response-container {
     min-width: 48%;
     max-height: 48%;
 }

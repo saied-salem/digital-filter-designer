@@ -56,6 +56,7 @@ const s = (p5_inst) => {
             p5_inst.redraw()
         }
         updateFilterDesign(filter_plane.getZerosPoles(radius))
+        updateAllPassCoeff()
         return true
     }
 
@@ -72,6 +73,7 @@ const s = (p5_inst) => {
             }
         }
         updateFilterDesign(filter_plane.getZerosPoles(radius))
+        updateAllPassCoeff()
         p5_inst.redraw()
     }
 

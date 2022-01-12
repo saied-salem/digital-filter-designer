@@ -1,6 +1,7 @@
 const filterDesignMagnitude = document.querySelector('#filter-mag-response')
 const filterDesignPhase = document.querySelector('#filter-phase-response')
 const allPassPhase = document.getElementById('all-pass-phase-response');
+const finalPhase = document.getElementById('final-filter-phase-response');
 const checkList = document.getElementById('list1');
 
 
@@ -51,16 +52,25 @@ function addNewA() {
     clearCheckBoxes()
 }
 
-function updateFilter(allPassCoeff){
-    postData('http://127.0.0.1:8080/getAllPassFilter', {
-        a: allPassCoeff,
-    }).then((data) => {
-        updateFilterPlotting(data.w, data.angles)
+async function updateFilterPhase(allPassCoeff){
+    const { zeros, poles } = filter_plane.getZerosPoles(radius)
+    const { w: w1, angels: allPassAngels } = await postData(
+        'http://127.0.0.1:8080/getAllPassFilter',
+        {
+            a: allPassCoeff,
+        }
+    )
+    const {w, angels: finalFilterPhase, magnitude} = await postData('http://127.0.0.1:8080/getFinalFilter', {
+        zeros,
+        poles,
+        a: allPassCoeff
     })
+    updateFilterPlotting(w, allPassAngels, finalFilterPhase)
 }
 
-function updateFilterPlotting(x, y){
-    plotlyMultiLinePlot(allPassPhase, [{x, y}])
+function updateFilterPlotting(w, allPassAngels, finalFilterPhase){
+    plotlyMultiLinePlot(allPassPhase, [{x: w, y: allPassAngels}])
+    plotlyMultiLinePlot(finalPhase, [{x: w, y: finalFilterPhase}])
 }
 
 function plotlyMultiLinePlot(container, data){
@@ -91,7 +101,7 @@ function updateAllPassCoeff(){
         let checked = item.checked
         if (checked) allPassCoeff.push(aValue)
     })
-    updateFilter(allPassCoeff)
+    updateFilterPhase(allPassCoeff)
 }
 
 function clearCheckBoxes(){
