@@ -340,6 +340,3 @@ document
     .addEventListener('click', () => filter_plane.remove(curr_picked.index))
 
 let filterCanvas = new p5(s, 'circle-canvas')
-
-let allPassCanvas = new p5(s, 'all-pass-circle-canvas')
-console.log(filterCanvas)

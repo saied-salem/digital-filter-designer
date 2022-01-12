@@ -59,6 +59,10 @@ html{
     flex-direction: row;
     column-gap: 10px;
 }
+ #all-pass{
+    flex-direction: column;
+    gap: 10px;
+ }
 
 #filter-mag-response, #filter-phase-response{
     width: 100%;
@@ -94,9 +98,11 @@ html{
 
 #circle-control, #circle-canvas, #all-pass-unit-circle{
     display: flex;
+    align-items: flex-start;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
+    gap: 10px;
 }
 
 .btn-cricle-control:hover{
