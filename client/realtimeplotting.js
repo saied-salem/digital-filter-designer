@@ -75,11 +75,13 @@ submit_btn.addEventListener('click', async function (e) {
             x: [x],
             y: [y],
             mode: 'lines',
-            line: { color: '#80CAF6' },
+            line: { color: '#febc2c' },
         },
     ]
     var layout = {
         yaxis: { range: [-1, 2.5] },
+        plot_bgcolor: "#111111",
+        paper_bgcolor: "#111111"
     }
 
     var filtter_data = [
@@ -87,7 +89,7 @@ submit_btn.addEventListener('click', async function (e) {
             x: [x],
             y: [y_filtterd[0]],
             mode: 'lines',
-            line: { color: '#8fce00' },
+            line: { color: '#fd413c' },
         },
     ]
 
@@ -128,4 +130,7 @@ function realTimePlotting(y_filtterd, dx, a, b) {
         if (cnt === 400) clearInterval(interval)
     }, 40)
 }
+setTimeout(() => {
+    updateAllPassCoeff()
+}, 100)
 

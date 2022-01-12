@@ -59,7 +59,7 @@ html{
     flex-direction: row;
     column-gap: 10px;
 }
- #all-pass{
+ #all-pass, #real-time-filter{
     flex-direction: column;
     gap: 10px;
  }
@@ -78,7 +78,7 @@ html{
     padding: 20px;
 }
 
-#filter-response, #all-pass-response{
+#filter-response, #all-pass-response, #real-time-filter-plots, #real-time-filter-plots{
     min-width: 60%;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -89,7 +89,7 @@ html{
     min-width: 50%;
 }
 
-#all-pass-response{
+#all-pass-response, #real-time-filter-plots{
     flex-direction: row;
 }
 #circle-control{
@@ -104,7 +104,10 @@ html{
     justify-content: center;
     gap: 5;
 }
-#all-pass-unit-circle{
+#real-time-filter-container{
+    width:100%;
+}
+#all-pass-unit-circle, #real-time-filter-container{
     gap: 10px;
 }
 
@@ -137,6 +140,11 @@ html{
     font-weight: 600;
 }
 
+#csv-submitter{
+    padding: 8px;
+    font-weight: 600;
+}
+
 .btn:hover{
     color: #febc2c;
     cursor: pointer;
@@ -152,7 +160,7 @@ html{
     border-radius: 4px;
 }
 
-#all-pass-response-container {
+#all-pass-response-container , .half-plot-container{
     min-width: 48%;
     max-height: 48%;
 }
@@ -160,4 +168,8 @@ html{
 #all-pass-response-title, #final-filter-response-title{
     text-align: center;
     margin-bottom: 10px;
+}
+#real-time-filter-plots h4{
+    text-align: center;
+    margin-bottom: 5px;
 }

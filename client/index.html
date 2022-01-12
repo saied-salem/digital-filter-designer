@@ -66,12 +66,22 @@
 			</div>
 		</div>
 	</section>
+	<br/>
 	<section id="real-time-filter">
 		<div class="box" id="real-time-filter-container">
-			<input type="file" id="csvFile" accept=".csv" />
-			<button value="Submit" id= "csv-submitter">Submit</button>
-			<div id="original-signal"></div>
-			<div id="filtered-signal"></div>
+			<h2 id="real-time-title" class="title">Real Time Filtering</h2>
+			<input class="btn" type="file" id="csvFile" accept=".csv" />
+			<button class="btn" value="Submit" id= "csv-submitter">Filter</button>
+		</div>
+		<div class="box" id="real-time-filter-plots">
+			<div class="half-plot-container" id="all-pass-response-container">
+				<h4 class="title" id="original-signal-title">Original Signal</h4>
+				<div class=".half-plot" id="original-signal"></div>
+			</div>
+			<div  id="all-pass-response-container">
+				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
+				<div class=".half-plot" id="filtered-signal"></div>
+			</div>
 		</div>
 	</section>
 
