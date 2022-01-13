@@ -9,7 +9,7 @@ let speed = slider.value;
 
 slider.oninput = function() {
     output.innerHTML = this.value;
-    speed = -10*slider.value+1010;
+    speed = Math.floor(1000/slider.value);
   }
 
 updateFilterDesign({zeros: [], poles: []})
