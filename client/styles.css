@@ -1,5 +1,7 @@
 html{
     background-color: #212529;
+    font-family: "Open Sans";
+    overflow-x: hidden;
 }
 .dropdown-check-list {
     display: inline-block;
@@ -104,9 +106,6 @@ html{
     justify-content: center;
     gap: 5;
 }
-#real-time-filter-container{
-    width:100%;
-}
 #all-pass-unit-circle, #real-time-filter-container{
     gap: 10px;
 }
@@ -169,7 +168,14 @@ html{
     text-align: center;
     margin-bottom: 10px;
 }
+
 #real-time-filter-plots h4{
     text-align: center;
     margin-bottom: 5px;
+}
+
+#slider-value{
+    margin-top: 3px;
+    font-weight: bold;
+    color: #0060df;
 }
