@@ -59,7 +59,7 @@ function filter(a, b, n, x, y_filtterd) {
 
     filterd_point += b[0] * x[n]
     for (let i = 1; i < a.length; i++) {
-        filterd_point += a[i] * y_filtterd[n - i] + b[i] * x[n - i]
+        filterd_point += -a[i] * y_filtterd[n - i] + b[i] * x[n - i]
     }
     return filterd_point
 }
@@ -136,10 +136,30 @@ function realTimePlotting(y_filtterd, dx, a, b) {
 
 
         cnt++
-        if (cnt === 400) clearInterval(interval)
+        if (cnt === Math.min(signal_x.length, 2000)) clearInterval(interval)
     }, speed)
 }
+
 setTimeout(() => {
     updateAllPassCoeff()
 }, 100)
+
+function sine_wave(freq = 1, amplitude = 1, phase = 0, length = 1, resolution = 10000) {
+    const sin = Math.sin
+    const TWO_PI = 2*Math.PI
+    let generated_sine = {time:[], wave:[]}
+    for(let second of range(0, length-1))
+        for(let i = 0; i < resolution; i++){
+            let t = (i/(resolution-1)) + second
+            generated_sine.time[i+resolution*second] = t
+            generated_sine.wave[i+resolution*second] = sin(amplitude*TWO_PI*freq*t+phase)
+        }
+    return generated_sine
+}
+
+function* range(start, end) {
+    for (let i = start; i <= end; i++) {
+        yield i;
+    }
+}
 
