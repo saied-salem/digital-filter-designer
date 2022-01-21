@@ -54,17 +54,20 @@ function addNewA() {
 
 async function updateFilterPhase(allPassCoeff){
     const { zeros, poles } = filter_plane.getZerosPoles(radius)
-    const { w: w1, angels: allPassAngels } = await postData(
+    const { angels: allPassAngels } = await postData(
         'http://127.0.0.1:8080/getAllPassFilter',
         {
             a: allPassCoeff,
         }
     )
-    const {w, angels: finalFilterPhase, magnitude} = await postData('http://127.0.0.1:8080/getFinalFilter', {
-        zeros,
-        poles,
-        a: allPassCoeff
-    })
+    const { w, angels: finalFilterPhase } = await postData(
+        'http://127.0.0.1:8080/getFinalFilter',
+        {
+            zeros,
+            poles,
+            a: allPassCoeff,
+        }
+    )
     updateFilterPlotting(w, allPassAngels, finalFilterPhase)
 }
 

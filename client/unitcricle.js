@@ -2,6 +2,7 @@ let unit_circle_center, radius
 let curr_picked
 let filter_plane
 let unit_circle_mode
+let last_press_position
 
 const CANVAS_SIZE = 300
 const NONE_PICKED = { item: {point: null, conjugate: null}, index: -1 }
@@ -9,10 +10,8 @@ const Mode = { ZERO : 0, POLE : 1, CONJ_ZERO : 2, CONJ_POLE : 3 }
 const Conj_Modes = {2: Mode.CONJ_ZERO, 3: Mode.CONJ_POLE}
 const API = "http://127.0.0.1:8080"
 const modesMap = {
-    'real-zero': Mode.ZERO,
-    'real-pole': Mode.POLE,
-    'conjugate-zeros': Mode.CONJ_ZERO,
-    'conjugate-poles': Mode.CONJ_POLE,
+    'zero': Mode.ZERO,
+    'pole': Mode.POLE,
 }
 
 const s = (p5_inst) => {
@@ -37,27 +36,39 @@ const s = (p5_inst) => {
         drawUnitCricle()
         drawPoints()
     }
-    p5_inst.mouseReleased = function () {
-        p5_inst.noLoop()
+    p5_inst.mousePressed = function () {
+        let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
+        last_press_position = p
+    }
+
+    p5_inst.mouseMoved = function () {
+        drawCursor()
+    }
+
+    p5_inst.doubleClicked = function () {
+        curr_picked = NONE_PICKED
+        p5_inst.redraw()
     }
 
     p5_inst.mouseClicked = function () {
+        updateFilterDesign(filter_plane.getZerosPoles(radius))
+        updateAllPassCoeff()
+        p5_inst.noLoop()
+        return true
+    }
+
+    p5_inst.mouseReleased = function () {
         let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
-        if (isInsideCircle(p, unit_circle_center, radius, 0)) {
+        let position_changed = p.dist(last_press_position) != 0
+        if (filter_plane.isInsidePlane(p)) {
             let found = filter_plane.therePoint(p)
             if (found.item.point) {
                 curr_picked = found
             }
-            else filter_plane.addItem(p, mode = unit_circle_mode)
+            else if(!position_changed) filter_plane.addItem(p, mode = unit_circle_mode)
+            drawCursor()
             p5_inst.redraw()
         }
-        else if (curr_picked != NONE_PICKED) {
-            curr_picked = NONE_PICKED
-            p5_inst.redraw()
-        }
-        updateFilterDesign(filter_plane.getZerosPoles(radius))
-        updateAllPassCoeff()
-        return true
     }
 
     p5_inst.mouseDragged = function () {
@@ -74,18 +85,32 @@ const s = (p5_inst) => {
         }
         updateFilterDesign(filter_plane.getZerosPoles(radius))
         updateAllPassCoeff()
+        drawCursor()
         p5_inst.redraw()
+    }
+
+    function drawCursor() {
+        let p = p5_inst.createVector(p5_inst.mouseX, p5_inst.mouseY)
+        if (filter_plane.isInsidePlane(p)) {
+            const { index: found } = filter_plane.therePoint(p)
+            if (p5_inst.mouseIsPressed) p5_inst.cursor('grabbing')
+            else if (found != -1) {
+                p5_inst.cursor('pointer')
+            } else {
+                p5_inst.cursor()
+            }
+        }
     }
 
     function drawPoints() {
         filter_plane.items.forEach(({ point, conjugate }) => {
             if (point == curr_picked.item.point) {
                 point.draw(undefined, undefined, (picked = true))
-                if(conjugate) conjugate.draw(undefined, undefined, (picked = true))
+                conjugate?.draw(undefined, undefined, (picked = true))
             }
             else {
                 point.draw()
-                if(conjugate) conjugate.draw()
+                conjugate?.draw()
             }
 
         })
@@ -110,7 +135,8 @@ const s = (p5_inst) => {
         axes.forEach((axis) => { arrow(unit_circle_center, axis, '#000') })
     }
 
-    function isInsideCircle(p, center, radius, error) {
+    function isInsideCircle(p, center, radius, error=0) {
+        if(!p || !center || !radius) return
         return p.dist(center) < radius + (radius * error) / 100
     }
 
@@ -220,41 +246,37 @@ const s = (p5_inst) => {
             this.items = []
         }
 
-        //TODO: refactor and fix release bug
+        //TODO: fix release bug
         therePoint(p, error = 5) {
-            let real_p = p5_inst.createVector(p.x, unit_circle_center.y)
             for (let i = 0; i < this.items.length; i++) {
                 let item = this.items[i]
-                if (
-                    isInsideCircle(p, item.point.center, 8, error) ||
-                    (item.conjugate &&
-                        isInsideCircle(p, item.conjugate.center, 8, error))
-                ) {
+                if (this.#isInsideItem(p, item, error)) {
                     return { item, index: i }
                 }
-            }
-            for (
-                let i = 0;
-                i < this.items.length && !(unit_circle_mode in Conj_Modes);
-                i++
-            ) {
-                let item = this.items[i]
-                if (isInsideCircle(real_p, item.point.center, 8, error))
-                    return { item, index: i }
             }
             return { item: { point: null, conjugate: null }, index: -1 }
         }
 
+        #isInsideItem(p, item, error) {
+            let insidePonit = isInsideCircle(p, item.point.center, 8, error)
+            let insideConjugate = isInsideCircle(p, item.conjugate?.center, 8, error)
+            return insidePonit || insideConjugate
+        }
+
+        isInsidePlane(p) {
+            return isInsideCircle(p, unit_circle_center, radius, 0)
+        }
+
         getZerosPoles(max) {
-            let zerosPositions = [], polesPositions = []
+            let zerosPositions = [],
+                polesPositions = []
             this.items.forEach(({ point, conjugate }) => {
                 let pointPosition = point.getRelativePosition(max)
-                let conjugatePosition = conjugate
-                    ? conjugate.getRelativePosition(max)
-                    : null
-                let positions = point instanceof Zero ? zerosPositions : polesPositions
+                let conjugatePosition = conjugate?.getRelativePosition(max)
+                let positions =
+                    point instanceof Zero ? zerosPositions : polesPositions
                 positions.push(pointPosition)
-                if(conjugatePosition) positions.push(conjugatePosition)
+                if (conjugatePosition) positions.push(conjugatePosition)
             })
             return { zeros: zerosPositions, poles: polesPositions }
         }
@@ -262,8 +284,6 @@ const s = (p5_inst) => {
         addItem(p, mode) {
             if (mode == Mode.ZERO) this.#addZero(p)
             else if (mode == Mode.POLE) this.#addPole(p)
-            else if (mode == Mode.CONJ_ZERO) this.#addConjugateZero(p)
-            else this.#addConjugatePole(p)
             curr_picked = NONE_PICKED
         }
 
@@ -293,12 +313,20 @@ const s = (p5_inst) => {
         }
 
         #addZero(p) {
+            if (Math.abs(unit_circle_center.y - p.y) > 5){
+                this.#addConjugateZero(p)
+                return
+            }
             let center = p5_inst.createVector(p.x, unit_circle_center.y)
             let zero = new Zero(center, unit_circle_center)
             this.items.push({ point: zero, conjugate: null })
         }
 
         #addPole(p) {
+            if (Math.abs(unit_circle_center.y - p.y) > 5){
+                this.#addConjugatePole(p)
+                return
+            }
             let center = p5_inst.createVector(p.x, unit_circle_center.y)
             let pole = new Pole(center, unit_circle_center)
             this.items.push({ point: pole, conjugate: null })
