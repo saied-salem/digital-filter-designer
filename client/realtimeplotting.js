@@ -1,9 +1,12 @@
 const submit_btn = document.getElementById('csv-submitter')
+const stop_btn = document.getElementById('stop-filtering')
 const csvFile = document.getElementById('csvFile')
 const button = document.getElementById('sent_zeros_poles')
-let signal_x, signal_y
 let slider = document.getElementById("myRange");
 let output = document.getElementById("slider-value");
+let signal_x, signal_y
+let plotting_interval
+
 output.innerHTML = slider.value;
 let speed = Math.floor(1000/slider.value);
 
@@ -41,6 +44,10 @@ async function get_differenceEquationCoefficients(zeros, poles) {
 
 csvFile.addEventListener('change', () => {
     readData()
+}) 
+
+stop_btn.addEventListener('click', () => {
+    clearInterval(plotting_interval)
 }) 
 
 function equateLength(a, b){
@@ -109,7 +116,7 @@ submit_btn.addEventListener('click', async function (e) {
 
 function realTimePlotting(y_filtterd, dx, a, b) {
     let cnt = 1
-    let interval = setInterval(function () {
+    plotting_interval = setInterval(function () {
         y_filtterd[cnt] = filter(a, b, cnt, signal_y, y_filtterd)
 
         let update = {
@@ -136,7 +143,7 @@ function realTimePlotting(y_filtterd, dx, a, b) {
 
 
         cnt++
-        if (cnt === Math.min(signal_x.length, 2000)) clearInterval(interval)
+        if (cnt === Math.min(signal_x.length, 2000)) clearInterval(plotting_interval)
     }, speed)
 }
 

@@ -20,16 +20,16 @@
 				<button id="zero" class="btn-cricle-control mode-control">Add Zeros</button>
 				<button id="pole" class="btn-cricle-control mode-control">Add Poles</button>
 				<button id="remove" class="btn-cricle-control">Remove</button>
-				<button id="remove-all" class="btn-cricle-control">Remove All</button>
 				<button id="remove-zeros" class="btn-cricle-control">Remove Zeros</button>
 				<button id="remove-poles" class="btn-cricle-control">Remove Poles</button>
+				<button id="remove-all" class="btn-cricle-control">Remove All</button>
 			</div>
 		</div>
 		<div class="box" id="filter-response">
 			<h4 class="freq-response-title title">Magnitude Response</h4>
-			<div id="filter-mag-response"> </div>
+			<div id="filter-mag-response" class="response-plotting"> </div>
 			<h4 class="freq-response-title title">Phase Response</h2>
-			<div id="filter-phase-response"> </div>
+			<div id="filter-phase-response" class="response-plotting"> </div>
 		</div>
 	</section>
 	<br/>
@@ -55,12 +55,12 @@
 		<div class="box" id="all-pass-response">
 			<div id="all-pass-response-container">
 				<h4 class="title" id="all-pass-response-title">All Pass Phase Response</h4>
-				<div id="all-pass-phase-response"> </div>
+				<div id="all-pass-phase-response" class="response-plotting"> </div>
 			</div>
 		
 			<div id="final-filter-response">
 				<h4 id="final-filter-response-title" class="title">Final Phase Response</h4>
-				<div id="final-filter-phase-response"> </div>
+				<div id="final-filter-phase-response" class="response-plotting"> </div>
 			</div>
 		</div>
 	</section>
@@ -70,6 +70,7 @@
 			<h2 id="real-time-title" class="title">Real Time Filtering</h2>
 			<input class="btn" type="file" id="csvFile" accept=".csv" />
 			<button class="btn" value="Submit" id= "csv-submitter">Filter</button>
+			<button class="btn" value="Stop" id= "stop-filtering">Stop</button>
 			<input type="range" min="1" max="100" value="1" class="slider" id="myRange">
 			<p id="slider-value"></p>
 
@@ -77,7 +78,7 @@
 		<div class="box" id="real-time-filter-plots">
 			<div class="half-plot-container" id="all-pass-response-container">
 				<h4 class="title" id="original-signal-title">Original Signal</h4>
-				<div class=".half-plot" id="original-signal"></div>
+				<div class=".half-plot " id="original-signal"></div>
 			</div>
 			<div  id="all-pass-response-container">
 				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>

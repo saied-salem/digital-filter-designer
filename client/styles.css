@@ -96,6 +96,7 @@ html{
 }
 #circle-control{
     gap: 5px;
+    margin-top: 10px;
 }
 
 #circle-control, #circle-canvas, #all-pass-unit-circle, #real-time-filter-container{
@@ -139,7 +140,7 @@ html{
     font-weight: 600;
 }
 
-#csv-submitter{
+#csv-submitter, #stop-filtering{
     padding: 8px;
     font-weight: 600;
 }
@@ -178,4 +179,8 @@ html{
     margin-top: 3px;
     font-weight: bold;
     color: #0060df;
+}
+
+.response-plotting{
+    min-height:40vh;
 }
