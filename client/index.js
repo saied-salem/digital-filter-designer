@@ -21,7 +21,7 @@ async function postData(url = '', data = {}) {
     return response.json()
 }
 
-        
+
 async function updateFilterDesign(data) {
     data.gain = 1
     let { w, angels, magnitude } = await postData(`${API}/getFilter`, data)

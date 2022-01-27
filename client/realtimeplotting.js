@@ -44,11 +44,11 @@ async function get_differenceEquationCoefficients(zeros, poles) {
 
 csvFile.addEventListener('change', () => {
     readData()
-}) 
+})
 
 stop_btn.addEventListener('click', () => {
     clearInterval(plotting_interval)
-}) 
+})
 
 function equateLength(a, b){
     max_length = Math.max(a.length, b.length)
@@ -79,7 +79,7 @@ submit_btn.addEventListener('click', async function (e) {
         console.log("NO Zeros and Poles")
         return
     }
-    const [a, b] = await get_differenceEquationCoefficients(zeros, poles) 
+    const [a, b] = await get_differenceEquationCoefficients(zeros, poles)
 
     let x = signal_x[0], y = signal_y[0]
     let dx = signal_x[2] - signal_x[1]
