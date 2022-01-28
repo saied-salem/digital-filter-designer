@@ -184,3 +184,7 @@ html{
 .response-plotting{
     min-height:40vh;
 }
+
+#zero{
+    color: #febc2c;
+}

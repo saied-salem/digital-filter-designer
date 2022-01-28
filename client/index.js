@@ -3,7 +3,9 @@ const filterDesignPhase = document.querySelector('#filter-phase-response')
 const allPassPhase = document.getElementById('all-pass-phase-response');
 const finalPhase = document.getElementById('final-filter-phase-response');
 const checkList = document.getElementById('list1');
-
+const zero_mode_btn = document.getElementById("zero")
+const pole_mode_btn = document.getElementById("pole")
+const modes_btns = [zero_mode_btn, pole_mode_btn]
 
 document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff)
 document.querySelector('#new-all-pass-coef').addEventListener('click', addNewA)
@@ -115,4 +117,7 @@ function clearCheckBoxes(){
 
 function changeMode(e){
     unit_circle_mode = modesMap[e.target.id]
+    for(btn of modes_btns){
+        btn.style.color = (btn !== e.target) ? "#fff" : "#febc2c";
+    }
 }
