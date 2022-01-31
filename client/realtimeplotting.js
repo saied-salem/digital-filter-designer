@@ -1,3 +1,5 @@
+const notyf = new Notyf()
+
 const submit_btn = document.getElementById('csv-submitter')
 const stop_btn = document.getElementById('stop-filtering')
 const csvFile = document.getElementById('csvFile')
@@ -48,6 +50,7 @@ csvFile.addEventListener('change', () => {
 
 stop_btn.addEventListener('click', () => {
     clearInterval(plotting_interval)
+    updateBtnsState((plotting = false))
 })
 
 function equateLength(a, b){
@@ -76,7 +79,7 @@ submit_btn.addEventListener('click', async function (e) {
 
     const {zeros, poles} = filter_plane.getZerosPoles(radius)
     if (zeros.length === 0 && poles.length === 0) {
-        console.log("NO Zeros and Poles")
+        notyf.error('No filter designed');
         return
     }
     const [a, b] = await get_differenceEquationCoefficients(zeros, poles)
@@ -109,6 +112,7 @@ submit_btn.addEventListener('click', async function (e) {
         },
     ]
 
+    updateBtnsState((plotting = true))
     Plotly.newPlot('original-signal', data, layout)
     Plotly.newPlot('filtered-signal', filtter_data, layout)
     realTimePlotting(y_filtterd, dx, a, b)
@@ -143,7 +147,10 @@ function realTimePlotting(y_filtterd, dx, a, b) {
 
 
         cnt++
-        if (cnt === Math.min(signal_x.length, 2000)) clearInterval(plotting_interval)
+        if (cnt === Math.min(signal_x.length, 2000)){
+            clearInterval(plotting_interval)
+            updateBtnsState((plotting = false))
+        }
     }, speed)
 }
 
@@ -170,3 +177,10 @@ function* range(start, end) {
     }
 }
 
+function updateBtnsState(plotting){
+    let btns = [stop_btn, submit_btn], disabled_state = [!plotting, plotting]
+    btns.forEach((btn, idx) => btn.disabled = disabled_state[idx])
+    btns.forEach(btn => btn.className = (btn.disabled)? 'disabled': 'btn')
+}
+
+updateBtnsState((plotting = false))
