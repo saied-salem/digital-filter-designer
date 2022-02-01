@@ -62,16 +62,40 @@ function equateLength(a, b){
     return [a, b]
 }
 
-function filter(a, b, n, x, y_filtterd) {
-    let filterd_point = 0
+/**
+ * IIR filter implementation of the transfer function H[Z] using the difference equation.
+ *
+ * @param {Array}   a           List of denominator coefficients.
+ * @param {Array}   b           List of numerator coefficients.
+ * @param {Number}  n           Index of sample point to filter.
+ * @param {Array}   x           List of input samples.
+ * @param {Array}   y           List of previous filterd samples.
+ *
+ * @return {Number}             The filterd sample value.
+ *
+ * -------------------------------------------------------------------------------------
+ *                                𝗧𝗿𝗮𝗻𝘀𝗳𝗲𝗿 𝗙𝘂𝗻𝗰𝘁𝗶𝗼𝗻
+ *
+ *             Y[z]       Σ b[n].z^-n       b0 + b1.z^-1 + .... + bM.z^-M
+ *    H[z] = -------- = --------------- = ---------------------------------, a0 = 1
+ *             X[z]       Σ a[n].z^-n       1 + a1.z^-1 + .... + aN.z^-N
+ *
+ *                                𝗗𝗶𝗳𝗳𝗲𝗿𝗲𝗻𝗰𝗲 𝗘𝗾𝘂𝗮𝘁𝗶𝗼𝗻
+ *
+ *                        Y[n] = Σ b[m].X[n-m] - Σ a[m].Y[n-m]
+ * -------------------------------------------------------------------------------------
+ */
+function filter(a, b, n, x, y) {
+    let filter_order = Math.max(a.length(), b.length())
     if(a.length != b.length) equateLength(a, b)
-    if (n < a.length) return y_filtterd[n]
+    if (n < filter_order) return y[n]
 
-    filterd_point += b[0] * x[n]
-    for (let i = 1; i < a.length; i++) {
-        filterd_point += -a[i] * y_filtterd[n - i] + b[i] * x[n - i]
+    let y_n = b[0]*x[n]
+    for (let m = 1; m < filter_order; m++) {
+        y_n += b[m]*x[n-m] - a[m]*y[n-m]
     }
-    return filterd_point
+
+    return y_n
 }
 
 submit_btn.addEventListener('click', async function (e) {
