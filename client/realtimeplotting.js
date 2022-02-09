@@ -86,7 +86,7 @@ function equateLength(a, b){
  * -------------------------------------------------------------------------------------
  */
 function filter(a, b, n, x, y) {
-    let filter_order = Math.max(a.length(), b.length())
+    let filter_order = Math.max(a.length, b.length)
     if(a.length != b.length) equateLength(a, b)
     if (n < filter_order) return y[n]
 
