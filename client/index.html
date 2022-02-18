@@ -7,10 +7,10 @@
 	<title>Index</title>
 	<script src="lib/danfo.min.js"></script>
 	<script src="lib/p5.min.js"></script>
-    <script src="lib/plotly-2.8.3.min.js"></script>
-    <script src="lib/notyf.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="styles.css"/>
-	<link rel="stylesheet" type="text/css" href="lib/notfy.min.css"/>
+	<script src="lib/plotly-2.8.3.min.js"></script>
+	<script src="lib/notyf.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<link rel="stylesheet" type="text/css" href="lib/notfy.min.css" />
 </head>
 
 <body>
@@ -31,10 +31,10 @@
 			<h4 class="freq-response-title title">Magnitude Response</h4>
 			<div id="filter-mag-response" class="response-plotting"> </div>
 			<h4 class="freq-response-title title">Phase Response</h2>
-			<div id="filter-phase-response" class="response-plotting"> </div>
+				<div id="filter-phase-response" class="response-plotting"> </div>
 		</div>
 	</section>
-	<br/>
+	<br />
 	<section id="all-pass">
 		<div class="box" id="all-pass-unit-circle">
 			<h2 id="all-pass-title" class="title">All Pass Filter Design</h2>
@@ -59,20 +59,20 @@
 				<h4 class="title" id="all-pass-response-title">All Pass Phase Response</h4>
 				<div id="all-pass-phase-response" class="response-plotting"> </div>
 			</div>
-		
+
 			<div id="final-filter-response">
 				<h4 id="final-filter-response-title" class="title">Final Phase Response</h4>
 				<div id="final-filter-phase-response" class="response-plotting"> </div>
 			</div>
 		</div>
 	</section>
-	<br/>
+	<br />
 	<section id="real-time-filter">
 		<div class="box" id="real-time-filter-container">
 			<h2 id="real-time-title" class="title">Real Time Filtering</h2>
 			<input class="btn" type="file" id="csvFile" accept=".csv" />
-			<button class="btn" value="Submit" id= "csv-submitter">Filter</button>
-			<button class="btn" value="Stop" id= "stop-filtering">Stop</button>
+			<button class="btn" value="Submit" id="csv-submitter">Filter</button>
+			<button class="btn" value="Stop" id="stop-filtering">Stop</button>
 			<input type="range" min="1" max="100" value="1" class="slider" id="myRange">
 			<p id="slider-value"></p>
 
@@ -82,7 +82,7 @@
 				<h4 class="title" id="original-signal-title">Original Signal</h4>
 				<div class=".half-plot " id="original-signal"></div>
 			</div>
-			<div  id="all-pass-response-container">
+			<div id="all-pass-response-container">
 				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
 				<div class=".half-plot" id="filtered-signal"></div>
 			</div>
