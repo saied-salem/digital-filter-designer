@@ -20,8 +20,8 @@ response and another graph for the phase response.
 -  Control the speed of the filtering process (i.e the filter can process 1 point per second or 100 points per second or any number in between via a slider.
 -  Correct for the phase by adding some All-Pass filters.
 -  Picking the suitable all-pass through a library
-available in website.
-- Picking one or more all-pass filter to add to the original design filter.
+available in website to add to original filter
+
 
 
 ## Filter Design Demo
